@@ -4,16 +4,30 @@
 
 #include "MainWindow.hpp"
 
-MainWindow::MainWindow()
+MainWindow::MainWindow() :
+    _ui{std::make_unique<Ui::MainWindow>()},
+    _defFont{std::make_unique<QFont>("Liberation Mono", 12)}
 {
-    Ui::MainWindow ui{};
-    ui.setupUi(this);
+    _ui->setupUi(this);
+    _ui->plainTextEdit->setFont(*_defFont);
 
-    QObject::connect(ui.action_Exit, SIGNAL(triggered()), this, SLOT(closeApp()));
+    auto palette = _ui->plainTextEdit->palette();
+    palette.setColor(QPalette::Base, Qt::black);
+    palette.setColor(QPalette::Text, Qt::green);
+    _ui->plainTextEdit->setPalette(palette);
+
+    _ui->plainTextEdit->setPlainText("qweqweqwe\nqweqweqwe1\nwwww");
+
+    _ui->plainTextEdit->appendPlainText("11111");
+    _ui->plainTextEdit->appendPlainText("22222");
+
+    const auto& tm = QTime::currentTime();
+
+    _ui->plainTextEdit->appendPlainText(QString("%1: data").arg(tm.toString(Qt::ISODateWithMs)));
 }
 
-void MainWindow::closeApp()
+void MainWindow::on_action_Exit_triggered()
 {
-//    QMessageBox::information(this, "Exit", "test");
+    QMessageBox::information(this, "Exit", "test");
     close();
 }
