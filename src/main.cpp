@@ -1,13 +1,14 @@
+
 #include <QApplication>
-#include <ui_main.h>
+#include "MainWindow.hpp"
 
 int main(int argc, char* argv[])
 {
-    QApplication   app(argc, argv);
-    QMainWindow    mainWindow{};
-    Ui::MainWindow ui{};
+    QApplication app{argc, argv};
+    MainWindow   mainWindow{};
 
-    ui.setupUi(&mainWindow);
+    app.setQuitOnLastWindowClosed(true);
+
     mainWindow.show();
     return app.exec();
 }
