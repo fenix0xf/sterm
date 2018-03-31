@@ -22,17 +22,19 @@
 # SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(sterm CXX)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-aux_source_directory(src SOURCES)
+file(GLOB SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.[h,c]pp)
 
 add_executable(sterm ${SOURCES})
 
-find_package(Qt5 COMPONENTS Widgets DBus REQUIRED)
-target_link_libraries(sterm Qt5::Widgets Qt5::DBus)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+target_link_libraries(sterm Qt5::Widgets)

@@ -22,32 +22,25 @@
  * SOFTWARE.
  */
 
-#ifndef STERM_MAINWINDOW_HPP
-#define STERM_MAINWINDOW_HPP
-
-#include <memory>
-#include <QMainWindow>
-#include <ui_MainWindow.h>
-
-namespace Ui {
-    class MainWindow;
-}
+#include "PlainTextTerminal.hpp"
 
 namespace sterm {
-    class MainWindow : public QMainWindow
+    PlainTextTerminal::PlainTextTerminal(QPlainTextEdit& plainTextEdit) : _plainTextEdit(_plainTextEdit)
     {
-    Q_OBJECT
+    }
 
-        std::unique_ptr<Ui::MainWindow> _ui;
-        std::unique_ptr<QFont>          _defFont;
+    void PlainTextTerminal::PrintLine(const QString& s)
+    {
 
-    public:
-        MainWindow();
+    }
 
-    public slots:
-        void on_action_Exit_triggered();
+    void PlainTextTerminal::SetColor(const QColor& background, const QColor& foreground)
+    {
 
-    };
+    }
+
+    void PlainTextTerminal::SetFont(const QFont& font)
+    {
+
+    }
 }
-
-#endif //STERM_MAINWINDOW_HPP

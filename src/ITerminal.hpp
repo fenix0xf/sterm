@@ -22,32 +22,21 @@
  * SOFTWARE.
  */
 
-#ifndef STERM_MAINWINDOW_HPP
-#define STERM_MAINWINDOW_HPP
+#ifndef STERM_ITERMINAL_HPP
+#define STERM_ITERMINAL_HPP
 
-#include <memory>
-#include <QMainWindow>
-#include <ui_MainWindow.h>
-
-namespace Ui {
-    class MainWindow;
-}
+#include <QString>
+#include <QColor>
+#include <QFont>
 
 namespace sterm {
-    class MainWindow : public QMainWindow
+    class ITerminal
     {
-    Q_OBJECT
-
-        std::unique_ptr<Ui::MainWindow> _ui;
-        std::unique_ptr<QFont>          _defFont;
-
     public:
-        MainWindow();
-
-    public slots:
-        void on_action_Exit_triggered();
-
+        virtual void PrintLine(const QString& s) = 0;
+        virtual void SetColor(const QColor& background, const QColor& foreground) = 0;
+        virtual void SetFont(const QFont& font) = 0;
     };
 }
 
-#endif //STERM_MAINWINDOW_HPP
+#endif //STERM_ITERMINAL_HPP
