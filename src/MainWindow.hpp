@@ -34,15 +34,19 @@ namespace Ui {
 }
 
 namespace sterm {
+    class PlainTextTerminal;
+
     class MainWindow : public QMainWindow
     {
     Q_OBJECT
 
-        std::unique_ptr<Ui::MainWindow> _ui;
-        std::unique_ptr<QFont>          _defFont;
+        std::unique_ptr<Ui::MainWindow>    _ui;
+        std::unique_ptr<QFont>             _defFont;
+        std::unique_ptr<PlainTextTerminal> _term;
 
     public:
         MainWindow();
+        ~MainWindow();
 
     public slots:
         void on_action_Exit_triggered();

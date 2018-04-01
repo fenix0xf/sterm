@@ -24,23 +24,15 @@
 
 #include "PlainTextTerminal.hpp"
 
+#include <QMessageBox>
+
 namespace sterm {
     PlainTextTerminal::PlainTextTerminal(QPlainTextEdit& plainTextEdit) : _plainTextEdit(_plainTextEdit)
     {
     }
 
-    void PlainTextTerminal::PrintLine(const QString& s)
+    void PlainTextTerminal::OutString(const QString& s)
     {
-
-    }
-
-    void PlainTextTerminal::SetColor(const QColor& background, const QColor& foreground)
-    {
-
-    }
-
-    void PlainTextTerminal::SetFont(const QFont& font)
-    {
-
+        _plainTextEdit.appendPlainText(s);
     }
 }

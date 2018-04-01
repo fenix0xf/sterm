@@ -22,21 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef STERM_ITERMINAL_HPP
-#define STERM_ITERMINAL_HPP
+#ifndef STERM_TERMINALBASE_HPP
+#define STERM_TERMINALBASE_HPP
 
 #include <QString>
 #include <QColor>
 #include <QFont>
 
 namespace sterm {
-    class ITerminal
+    class TerminalBase
     {
     public:
-        virtual void PrintLine(const QString& s) = 0;
-        virtual void SetColor(const QColor& background, const QColor& foreground) = 0;
-        virtual void SetFont(const QFont& font) = 0;
+        TerminalBase() = default;
+        TerminalBase(const TerminalBase&) = default;
+        TerminalBase(TerminalBase&&) = default;
+        TerminalBase& operator=(const TerminalBase&) = default;
+        TerminalBase& operator=(TerminalBase&&) = default;
+        virtual ~TerminalBase() = default;
+
+//        virtual void SetColorBackground(const QColor& color) = 0;
+//        virtual void SetColorForeground(const QColor& color) = 0;
+//        virtual void SetFont(const QFont& font) = 0;
+
+        void PrintLine(const QString& s);
+        void PrintLineTm(const QString& s);
+
+
+    protected:
+        virtual void OutString(const QString& s) = 0;
     };
 }
 
-#endif //STERM_ITERMINAL_HPP
+#endif //STERM_TERMINALBASE_HPP

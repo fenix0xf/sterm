@@ -26,19 +26,19 @@
 #define STERM_PLAINTEXTTERMINAL_HPP
 
 #include <QPlainTextEdit>
-#include "ITerminal.hpp"
+#include "TerminalBase.hpp"
 
 namespace sterm {
-    class PlainTextTerminal final : public ITerminal
+    class PlainTextTerminal final : public TerminalBase
     {
         QPlainTextEdit& _plainTextEdit;
 
     public:
-        PlainTextTerminal(QPlainTextEdit& plainTextEdit);
+        explicit PlainTextTerminal(QPlainTextEdit& plainTextEdit);
 
-        virtual void PrintLine(const QString& s) override;
-        virtual void SetColor(const QColor& background, const QColor& foreground) override;
-        virtual void SetFont(const QFont& font) override;
+    protected:
+        void OutString(const QString& s) override;
+
     };
 }
 
