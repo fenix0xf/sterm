@@ -24,14 +24,15 @@
 
 #include "TerminalBase.hpp"
 
-namespace sterm {
+namespace sterm
+{
     void TerminalBase::PrintLine(const QString& s)
     {
-        OutString(s);
+        outString(s);
     }
 
     void TerminalBase::PrintLineTm(const QString& s)
     {
-        OutString(s);
+        outString(s);
     }
 }

@@ -26,35 +26,32 @@
 
 #include <QtWidgets>
 #include <ui_MainWindow.h>
+
 #include "PlainTextTerminal.hpp"
+#include "Version.hpp"
 
-namespace sterm {
+namespace sterm
+{
     MainWindow::MainWindow() :
-        _ui{std::make_unique<Ui::MainWindow>()},
-        _defFont{std::make_unique<QFont>("Liberation Mono", 12)}
+        ui_{std::make_unique<Ui::MainWindow>()},
+        defFont_{std::make_unique<QFont>("Liberation Mono", 12)}
     {
-        _ui->setupUi(this);
-        _term = std::make_unique<PlainTextTerminal>(*_ui->plainTextEdit);
+        ui_->setupUi(this);
+        term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< called after ui_->setupUi(this);
 
-        _ui->plainTextEdit->setFont(*_defFont);
+        term_->PrintLineTm("Serial Terminal ");
 
-        auto palette = _ui->plainTextEdit->palette();
-        palette.setColor(QPalette::Base, Qt::black);
-        palette.setColor(QPalette::Text, Qt::green);
-        _ui->plainTextEdit->setPalette(palette);
-
-        _term->PrintLine("test123");
-//        _ui->plainTextEdit->setPlainText("qweqweqwe\nqweqweqwe1\nwwww");
+        version.getBuildTime();
 //
-//        _ui->plainTextEdit->appendPlainText("11111");
-//        _ui->plainTextEdit->appendPlainText("22222");
+
 //
 //        const auto& tm = QTime::currentTime();
 //
 //        _ui->plainTextEdit->appendPlainText(QString("%1: data").arg(tm.toString(Qt::ISODateWithMs)));
     }
 
-    void MainWindow::on_action_Exit_triggered()
+    void
+    MainWindow::on_action_Exit_triggered()
     {
         QMessageBox::information(this, "Exit", "test");
         close();

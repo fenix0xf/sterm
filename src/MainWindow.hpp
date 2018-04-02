@@ -29,24 +29,28 @@
 #include <QMainWindow>
 #include <ui_MainWindow.h>
 
-namespace Ui {
+namespace Ui
+{
     class MainWindow;
 }
 
-namespace sterm {
-    class PlainTextTerminal;
+namespace sterm
+{
+    class TerminalBase;
 
     class MainWindow : public QMainWindow
     {
     Q_OBJECT
 
-        std::unique_ptr<Ui::MainWindow>    _ui;
-        std::unique_ptr<QFont>             _defFont;
-        std::unique_ptr<PlainTextTerminal> _term;
+        std::unique_ptr<Ui::MainWindow> ui_;
+
+        std::unique_ptr<QFont> defFont_;
+
+        std::unique_ptr<TerminalBase> term_;
 
     public:
         MainWindow();
-        ~MainWindow();
+        ~MainWindow() override;
 
     public slots:
         void on_action_Exit_triggered();

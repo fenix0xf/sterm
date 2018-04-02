@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #
 # MIT License
 #
@@ -22,28 +24,42 @@
 # SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+from datetime import datetime, timezone
+import time
+import pathlib
+import sys
 
-project(sterm CXX)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+if len(sys.argv) != 2:
+    print("Error: Invalid parameters!", file=sys.stderr)
+    exit(1)
 
-set(GLOBAL_WARNINGS -Werror -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wno-unused-function -Wno-unused-parameter -Wnon-virtual-dtor)
+outFileName = sys.argv[1]
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
+outTextFmt = \
+    "/**\n" \
+    " * Auto generated build date header.\n" \
+    " *\n" \
+    " * @details\n" \
+    " *\n" \
+    " * BUILD_DATE is seconds since 1970-01-01 00:00:00 UTC (UNIX Epoch).\n" \
+    " * BUILD_DATE_STR is current UTC time string.\n" \
+    " * BUILD_DATE_LSTR is current Local time string.\n" \
+    " *\n" \
+    " */\n\n" \
+    "#include <ctime>\n\n" \
+    "const time_t BUILD_DATE        = {0}; ///< {1}\n" \
+    "const char   BUILD_DATE_STR[]  = \"{1}\";\n" \
+    "const char   BUILD_DATE_LSTR[] = \"{2}\";\n"
 
-file(GLOB SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.[h,c]pp)
+utc = datetime.utcnow().replace(tzinfo=timezone.utc)
+local = utc.astimezone(tz=None)
 
-set(TARGET_NAME sterm)
+unixTimeUTC = str(int(time.mktime(local.timetuple())))
+tfmt = "%a %d %b %Y %H:%M:%S %z"
+utcStr = utc.strftime(tfmt)
+localStr = local.strftime(tfmt)
 
-add_executable(${TARGET_NAME} ${SOURCES})
-target_compile_options(${TARGET_NAME} PUBLIC ${GLOBAL_WARNINGS})
+outText = outTextFmt.format(unixTimeUTC, utcStr, localStr)
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
-target_link_libraries(${TARGET_NAME} Qt5::Widgets)
-
-### Update BuildDate.hpp file for all targets.
-add_custom_target(__build_date_target COMMAND ${PROJECT_SOURCE_DIR}/build-date.py ../src/BuildDate.hpp)
-add_dependencies(${TARGET_NAME} __build_date_target)
+outFile = pathlib.Path(outFileName)
+outFile.write_text(outText)

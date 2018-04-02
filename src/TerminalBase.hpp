@@ -29,7 +29,8 @@
 #include <QColor>
 #include <QFont>
 
-namespace sterm {
+namespace sterm
+{
     class TerminalBase
     {
     public:
@@ -40,16 +41,15 @@ namespace sterm {
         TerminalBase& operator=(TerminalBase&&) = default;
         virtual ~TerminalBase() = default;
 
-//        virtual void SetColorBackground(const QColor& color) = 0;
-//        virtual void SetColorForeground(const QColor& color) = 0;
-//        virtual void SetFont(const QFont& font) = 0;
+        virtual void setColorBackground(const QColor& color) = 0;
+        virtual void setColorForeground(const QColor& color) = 0;
+        virtual void setFont(const QFont& font) = 0;
 
         void PrintLine(const QString& s);
         void PrintLineTm(const QString& s);
 
-
     protected:
-        virtual void OutString(const QString& s) = 0;
+        virtual void outString(const QString& s) = 0;
     };
 }
 

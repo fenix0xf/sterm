@@ -28,16 +28,21 @@
 #include <QPlainTextEdit>
 #include "TerminalBase.hpp"
 
-namespace sterm {
+namespace sterm
+{
     class PlainTextTerminal final : public TerminalBase
     {
-        QPlainTextEdit& _plainTextEdit;
+        QPlainTextEdit& plainTextEdit_;
 
     public:
         explicit PlainTextTerminal(QPlainTextEdit& plainTextEdit);
 
+        void setColorBackground(const QColor& color) override;
+        void setColorForeground(const QColor& color) override;
+        void setFont(const QFont& font) override;
+
     protected:
-        void OutString(const QString& s) override;
+        void outString(const QString& s) override;
 
     };
 }

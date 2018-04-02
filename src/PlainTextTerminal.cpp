@@ -26,13 +26,35 @@
 
 #include <QMessageBox>
 
-namespace sterm {
-    PlainTextTerminal::PlainTextTerminal(QPlainTextEdit& plainTextEdit) : _plainTextEdit(_plainTextEdit)
+namespace sterm
+{
+    PlainTextTerminal::PlainTextTerminal(QPlainTextEdit& plainTextEdit)
+        : plainTextEdit_(plainTextEdit)
     {
+        plainTextEdit_.setReadOnly(true);
     }
 
-    void PlainTextTerminal::OutString(const QString& s)
+    void PlainTextTerminal::outString(const QString& s)
     {
-        _plainTextEdit.appendPlainText(s);
+        plainTextEdit_.appendPlainText(s);
+    }
+
+    void PlainTextTerminal::setColorBackground(const QColor& color)
+    {
+        auto palette = plainTextEdit_.palette();
+        palette.setColor(QPalette::Base, color);
+        plainTextEdit_.setPalette(palette);
+    }
+
+    void PlainTextTerminal::setColorForeground(const QColor& color)
+    {
+        auto palette = plainTextEdit_.palette();
+        palette.setColor(QPalette::Text, color);
+        plainTextEdit_.setPalette(palette);
+    }
+
+    void PlainTextTerminal::setFont(const QFont& font)
+    {
+
     }
 }
