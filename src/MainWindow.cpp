@@ -26,9 +26,10 @@
 
 #include <QtWidgets>
 #include <ui_MainWindow.h>
+#include <fmt/format.h>
 
-#include "PlainTextTerminal.hpp"
-#include "Version.hpp"
+#include <PlainTextTerminal.hpp>
+#include <Version.hpp>
 
 namespace sterm
 {
@@ -39,15 +40,11 @@ namespace sterm
         ui_->setupUi(this);
         term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< called after ui_->setupUi(this);
 
-        term_->PrintLineTm("Serial Terminal ");
+        term_->setFont(*defFont_);
+        term_->setColorForeground(Qt::green);
+        term_->setColorBackground(Qt::black);
 
-        version.getBuildTime();
-//
-
-//
-//        const auto& tm = QTime::currentTime();
-//
-//        _ui->plainTextEdit->appendPlainText(QString("%1: data").arg(tm.toString(Qt::ISODateWithMs)));
+        term_->PrintLineTm(fmt::format("*** Serial Terminal {:s} ***", version.getVersionString()));
     }
 
     void

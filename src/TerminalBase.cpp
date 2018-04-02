@@ -23,6 +23,8 @@
  */
 
 #include "TerminalBase.hpp"
+#include <chrono>
+#include <fmt/format.h>
 
 namespace sterm
 {
@@ -33,6 +35,17 @@ namespace sterm
 
     void TerminalBase::PrintLineTm(const QString& s)
     {
-        outString(s);
+        //TODO add timestamp
+        outString(QString::fromStdString(fmt::format("ts: {}", s.toStdString())));
+    }
+
+    void TerminalBase::PrintLine(const std::string& s)
+    {
+        PrintLine(QString::fromStdString(s));
+    }
+
+    void TerminalBase::PrintLineTm(const std::string& s)
+    {
+        PrintLineTm(QString::fromStdString(s));
     }
 }

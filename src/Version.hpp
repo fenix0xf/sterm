@@ -29,12 +29,13 @@
 #include <chrono>
 #include <string>
 
-#include "BuildDate.hpp"
+#include <fmt/format.h>
+#include <BuildDate.hpp>
 
 namespace
 {
     const size_t VERSION_MAJOR    = 0;
-    const size_t VERSION_MINOR    = 1;
+    const size_t VERSION_MINOR    = 2;
     const size_t VERSION_REVISION = 0;
 }
 
@@ -50,7 +51,7 @@ namespace sterm
     public:
         Version() = delete;
 
-        Version(size_t major, size_t minor, size_t revision, const std::chrono::time_point& buildTime)
+        Version(size_t major, size_t minor, size_t revision, const std::chrono::system_clock::time_point& buildTime)
             : major_(major),
               minor_(minor),
               revision_(revision),
@@ -73,19 +74,23 @@ namespace sterm
             return revision_;
         }
 
-        const std::chrono::time_point& getBuildTime() const
+        const std::chrono::system_clock::time_point& getBuildTime() const
         {
-//            std::chrono::system_clock::from_time_t()
             return buildTime_;
         }
 
         std::string getVersionString()
         {
-            return
+            return fmt::format("v{:d}.{:d}.{:d}", getMajor(), getMinor(), getRevision());
+        }
+
+        std::string getBuildDate()
+        {
+            return BUILD_DATE_LSTR;
         }
     };
 
-    Version version;
+    Version version(VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, std::chrono::system_clock::from_time_t(BUILD_DATE));
 }
 
 #endif //STERM_VERSION_HPP

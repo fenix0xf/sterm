@@ -25,6 +25,7 @@
 #ifndef STERM_TERMINALBASE_HPP
 #define STERM_TERMINALBASE_HPP
 
+#include <string>
 #include <QString>
 #include <QColor>
 #include <QFont>
@@ -46,7 +47,9 @@ namespace sterm
         virtual void setFont(const QFont& font) = 0;
 
         void PrintLine(const QString& s);
+        void PrintLine(const std::string& s);
         void PrintLineTm(const QString& s);
+        void PrintLineTm(const std::string& s);
 
     protected:
         virtual void outString(const QString& s) = 0;

@@ -39,10 +39,13 @@ file(GLOB SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.[h,c]pp)
 set(TARGET_NAME sterm)
 
 add_executable(${TARGET_NAME} ${SOURCES})
+
+target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/lib/fmt/include)
 target_compile_options(${TARGET_NAME} PUBLIC ${GLOBAL_WARNINGS})
 
+add_subdirectory(lib/fmt)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
-target_link_libraries(${TARGET_NAME} Qt5::Widgets)
+target_link_libraries(${TARGET_NAME} Qt5::Widgets fmt::fmt)
 
 ### Update BuildDate.hpp file for all targets.
 add_custom_target(__build_date_target COMMAND ${PROJECT_SOURCE_DIR}/build-date.py ../src/BuildDate.hpp)
