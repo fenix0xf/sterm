@@ -23,7 +23,6 @@
  */
 
 #include "PlainTextTerminal.hpp"
-
 #include <QMessageBox>
 
 namespace sterm
@@ -55,6 +54,6 @@ namespace sterm
 
     void PlainTextTerminal::setFont(const QFont& font)
     {
-
+        plainTextEdit_.setFont(font);
     }
 }

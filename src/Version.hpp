@@ -50,6 +50,10 @@ namespace sterm
 
     public:
         Version() = delete;
+        Version(const Version&) = delete;
+        Version(Version&&) = delete;
+        Version& operator=(const Version&) = delete;
+        Version& operator=(Version&&) = delete;
 
         Version(size_t major, size_t minor, size_t revision, const std::chrono::system_clock::time_point& buildTime)
             : major_(major),
