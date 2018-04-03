@@ -39,7 +39,7 @@ namespace sterm
         : ui_{std::make_unique<Ui::MainWindow>()}
     {
         ui_->setupUi(this);
-        term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< call after ui_->setupUi(this)!
+        term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< Call after ui_->setupUi(this)!
 
         term_->setFont("Liberation Mono", 14);
         term_->setColorForeground(0, 255, 0);

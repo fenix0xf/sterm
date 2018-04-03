@@ -55,9 +55,9 @@ utc = datetime.utcnow().replace(tzinfo=timezone.utc)
 local = utc.astimezone(tz=None)
 
 unixTimeUTC = str(int(time.mktime(local.timetuple())))
-tfmt = "%a %d %b %Y %H:%M:%S %z"
-utcStr = utc.strftime(tfmt)
-localStr = local.strftime(tfmt)
+tm_fmt = "%a %d %b %Y %H:%M:%S %z"
+utcStr = utc.strftime(tm_fmt)
+localStr = local.strftime(tm_fmt)
 
 outText = outTextFmt.format(unixTimeUTC, utcStr, localStr)
 
