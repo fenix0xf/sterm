@@ -36,17 +36,19 @@ namespace
 {
     const size_t VERSION_MAJOR    = 0;
     const size_t VERSION_MINOR    = 2;
-    const size_t VERSION_REVISION = 0;
+    const size_t VERSION_REVISION = 1;
 }
 
 namespace sterm
 {
     class Version
     {
-        size_t                                major_;
-        size_t                                minor_;
-        size_t                                revision_;
-        std::chrono::system_clock::time_point buildTime_;
+        using time_point = std::chrono::system_clock::time_point;
+
+        size_t     major_;
+        size_t     minor_;
+        size_t     revision_;
+        time_point buildTime_;
 
     public:
         Version() = delete;
@@ -54,6 +56,7 @@ namespace sterm
         Version(Version&&) = delete;
         Version& operator=(const Version&) = delete;
         Version& operator=(Version&&) = delete;
+        ~Version() = default;
 
         Version(size_t major, size_t minor, size_t revision, const std::chrono::system_clock::time_point& buildTime)
             : major_(major),
@@ -83,18 +86,21 @@ namespace sterm
             return buildTime_;
         }
 
-        std::string getVersionString()
+        std::string getVersionString() const
         {
             return fmt::format("v{:d}.{:d}.{:d}", getMajor(), getMinor(), getRevision());
         }
 
-        std::string getBuildDate()
+        std::string getBuildDate() const
         {
             return BUILD_DATE_LSTR;
         }
     };
 
-    Version version(VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, std::chrono::system_clock::from_time_t(BUILD_DATE));
+    const Version gVersion(VERSION_MAJOR,
+                           VERSION_MINOR,
+                           VERSION_REVISION,
+                           std::chrono::system_clock::from_time_t(BUILD_DATE));
 }
 
 #endif //STERM_VERSION_HPP

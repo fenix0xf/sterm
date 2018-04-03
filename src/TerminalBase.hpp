@@ -25,10 +25,8 @@
 #ifndef STERM_TERMINALBASE_HPP
 #define STERM_TERMINALBASE_HPP
 
+#include <cstdint>
 #include <string>
-#include <QString>
-#include <QColor>
-#include <QFont>
 
 namespace sterm
 {
@@ -42,17 +40,19 @@ namespace sterm
         TerminalBase& operator=(TerminalBase&&) = default;
         virtual ~TerminalBase() = default;
 
-        virtual void setColorBackground(const QColor& color) = 0;
-        virtual void setColorForeground(const QColor& color) = 0;
-        virtual void setFont(const QFont& font) = 0;
+        virtual void setColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) = 0;
+        virtual void setColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) = 0;
+        virtual void setFont(const std::string& family,
+                             intptr_t pointSize = -1,
+                             intptr_t weight = -1,
+                             bool italic = false) = 0;
 
-        void PrintLine(const QString& s);
-        void PrintLine(const std::string& s);
-        void PrintLineTm(const QString& s);
-        void PrintLineTm(const std::string& s);
+        void printRaw(const std::string& s);
+        void printLine(const std::string& s);
+        void printLineTm(const std::string& s);
 
     protected:
-        virtual void outString(const QString& s) = 0;
+        virtual void outRawString(const std::string& s) = 0;
     };
 }
 

@@ -23,37 +23,39 @@
  */
 
 #include "PlainTextTerminal.hpp"
-#include <QMessageBox>
+
+#include <QPlainTextEdit>
+#include <QFont>
 
 namespace sterm
 {
     PlainTextTerminal::PlainTextTerminal(QPlainTextEdit& plainTextEdit)
-        : plainTextEdit_(plainTextEdit)
+        : plainTextEdit_{plainTextEdit}
     {
         plainTextEdit_.setReadOnly(true);
     }
 
-    void PlainTextTerminal::outString(const QString& s)
+    void PlainTextTerminal::outRawString(const std::string& s)
     {
-        plainTextEdit_.appendPlainText(s);
+        plainTextEdit_.appendPlainText(QString::fromStdString(s));
     }
 
-    void PlainTextTerminal::setColorBackground(const QColor& color)
+    void PlainTextTerminal::setColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     {
         auto palette = plainTextEdit_.palette();
-        palette.setColor(QPalette::Base, color);
+        palette.setColor(QPalette::Base, QColor::fromRgb(r, g, b, a));
         plainTextEdit_.setPalette(palette);
     }
 
-    void PlainTextTerminal::setColorForeground(const QColor& color)
+    void PlainTextTerminal::setColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     {
         auto palette = plainTextEdit_.palette();
-        palette.setColor(QPalette::Text, color);
+        palette.setColor(QPalette::Text, QColor::fromRgb(r, g, b, a));
         plainTextEdit_.setPalette(palette);
     }
 
-    void PlainTextTerminal::setFont(const QFont& font)
+    void PlainTextTerminal::setFont(const std::string& family, intptr_t pointSize, intptr_t weight, bool italic)
     {
-        plainTextEdit_.setFont(font);
+        plainTextEdit_.setFont(QFont{QString::fromStdString(family), (int)pointSize, (int)weight, italic});
     }
 }

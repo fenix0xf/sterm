@@ -28,24 +28,18 @@
 
 namespace sterm
 {
-    void TerminalBase::PrintLine(const QString& s)
+    void TerminalBase::printRaw(const std::string& s)
     {
-        outString(s);
+        outRawString(s);
     }
 
-    void TerminalBase::PrintLineTm(const QString& s)
+    void TerminalBase::printLine(const std::string& s)
     {
-        //TODO add timestamp
-        outString(QString::fromStdString(fmt::format("ts: {}", s.toStdString())));
+        outRawString(s + '\n');
     }
 
-    void TerminalBase::PrintLine(const std::string& s)
+    void TerminalBase::printLineTm(const std::string& s)
     {
-        PrintLine(QString::fromStdString(s));
-    }
-
-    void TerminalBase::PrintLineTm(const std::string& s)
-    {
-        PrintLineTm(QString::fromStdString(s));
+        outRawString(fmt::format("ts: {}\n", s));
     }
 }

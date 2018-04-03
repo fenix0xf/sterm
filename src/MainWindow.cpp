@@ -24,31 +24,31 @@
 
 #include "MainWindow.hpp"
 
-#include <QtWidgets>
-#include <ui_MainWindow.h>
+#include <QMainWindow>
+#include <QMessageBox>
+
 #include <fmt/format.h>
+#include <ui_MainWindow.h>
 
 #include <PlainTextTerminal.hpp>
 #include <Version.hpp>
 
 namespace sterm
 {
-    MainWindow::MainWindow() :
-        ui_{std::make_unique<Ui::MainWindow>()},
-        defFont_{std::make_unique<QFont>("Liberation Mono", 12)}
+    MainWindow::MainWindow()
+        : ui_{std::make_unique<Ui::MainWindow>()}
     {
         ui_->setupUi(this);
-        term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< called after ui_->setupUi(this);
+        term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< call after ui_->setupUi(this)!
 
-        term_->setFont(*defFont_);
-        term_->setColorForeground(Qt::green);
-        term_->setColorBackground(Qt::black);
+        term_->setFont("Liberation Mono", 14);
+        term_->setColorForeground(0, 255, 0);
+        term_->setColorBackground(0, 0, 0);
 
-        term_->PrintLineTm(fmt::format("*** Serial Terminal {:s} ***", version.getVersionString()));
+        term_->printLineTm(fmt::format("*** Serial Terminal {:s} ***", gVersion.getVersionString()));
     }
 
-    void
-    MainWindow::on_action_Exit_triggered()
+    void MainWindow::on_action_Exit_triggered()
     {
         QMessageBox::information(this, "Exit", "test");
         close();
@@ -56,5 +56,6 @@ namespace sterm
 
     MainWindow::~MainWindow()
     {
+        /// Fix for std::unique_ptr<incomplete type> in hpp file.
     }
 }

@@ -29,7 +29,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(GLOBAL_WARNINGS -Werror -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wno-unused-function -Wno-unused-parameter -Wnon-virtual-dtor)
+set(CXX_WARNINGS
+    -Werror
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wconversion
+    -Wshadow
+    -Wno-unused-function
+    -Wno-unused-parameter
+    -Wnon-virtual-dtor)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -41,11 +50,12 @@ set(TARGET_NAME sterm)
 add_executable(${TARGET_NAME} ${SOURCES})
 
 target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/lib/fmt/include)
-target_compile_options(${TARGET_NAME} PUBLIC ${GLOBAL_WARNINGS})
+target_compile_options(${TARGET_NAME} PUBLIC ${CXX_WARNINGS})
 
 add_subdirectory(lib/fmt)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
-target_link_libraries(${TARGET_NAME} Qt5::Widgets fmt::fmt)
+
+target_link_libraries(${TARGET_NAME} Qt5::Widgets fmt)
 
 ### Update BuildDate.hpp file for all targets.
 add_custom_target(__build_date_target COMMAND ${PROJECT_SOURCE_DIR}/build-date.py ../src/BuildDate.hpp)

@@ -43,7 +43,6 @@ namespace sterm
     Q_OBJECT
 
         std::unique_ptr<Ui::MainWindow> ui_;
-        std::unique_ptr<QFont>          defFont_;
         std::unique_ptr<TerminalBase>   term_;
 
     public:
