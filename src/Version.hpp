@@ -25,30 +25,44 @@
 #ifndef STERM_VERSION_HPP
 #define STERM_VERSION_HPP
 
+#include <ctime>
 #include <cstddef>
-#include <chrono>
 #include <string>
 
 #include <fmt/format.h>
-#include <BuildDate.hpp>
+#include <BuildInfo.hpp>
 
 namespace
 {
     const size_t VERSION_MAJOR    = 0;
     const size_t VERSION_MINOR    = 2;
-    const size_t VERSION_REVISION = 1;
+    const size_t VERSION_REVISION = 2;
+
+    const std::string APP_NAME{"Serial Terminal"};
 }
+
+#ifdef DEBUG
+#define APP_DEBUG   " debug"
+#else
+#define APP_DEBUG   ""
+#endif
 
 namespace sterm
 {
     class Version
     {
-        using time_point = std::chrono::system_clock::time_point;
+        size_t major_;
+        size_t minor_;
+        size_t revision_;
+        time_t buildTime_;
 
-        size_t     major_;
-        size_t     minor_;
-        size_t     revision_;
-        time_point buildTime_;
+        Version(size_t major, size_t minor, size_t revision, time_t buildTime)
+            : major_(major),
+              minor_(minor),
+              revision_(revision),
+              buildTime_(buildTime)
+        {
+        }
 
     public:
         Version() = delete;
@@ -57,14 +71,6 @@ namespace sterm
         Version& operator=(const Version&) = delete;
         Version& operator=(Version&&) = delete;
         ~Version() = default;
-
-        Version(size_t major, size_t minor, size_t revision, const std::chrono::system_clock::time_point& buildTime)
-            : major_(major),
-              minor_(minor),
-              revision_(revision),
-              buildTime_(buildTime)
-        {
-        }
 
         size_t getMajor() const
         {
@@ -81,26 +87,37 @@ namespace sterm
             return revision_;
         }
 
-        const std::chrono::system_clock::time_point& getBuildTime() const
+        time_t getBuildTime() const
         {
             return buildTime_;
         }
 
         std::string getVersionString() const
         {
-            return fmt::format("v{:d}.{:d}.{:d}", getMajor(), getMinor(), getRevision());
+            return fmt::format("v{:d}.{:d}.{:d}" APP_DEBUG, getMajor(), getMinor(), getRevision());
         }
 
         std::string getBuildDate() const
         {
-            return BUILD_DATE_LSTR;
+            return build_info::BUILD_DATE_LSTR;
+        }
+
+        const std::string& getAppName() const
+        {
+            return APP_NAME;
+        }
+
+        std::string getAppNameAndVersion() const
+        {
+            return fmt::format("{:s} {:s}", getAppName(), getVersionString());
+        }
+
+        static const Version& get()
+        {
+            static const Version version(VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, build_info::BUILD_DATE);
+            return version;
         }
     };
-
-    const Version gVersion(VERSION_MAJOR,
-                           VERSION_MINOR,
-                           VERSION_REVISION,
-                           std::chrono::system_clock::from_time_t(BUILD_DATE));
 }
 
 #endif //STERM_VERSION_HPP

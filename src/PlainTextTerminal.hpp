@@ -35,6 +35,7 @@ namespace sterm
     class PlainTextTerminal final : public TerminalBase
     {
         QPlainTextEdit& plainTextEdit_;
+        void outRawString(const std::string& s) override;
 
     public:
         explicit PlainTextTerminal(QPlainTextEdit& plainTextEdit);
@@ -42,10 +43,6 @@ namespace sterm
         void setColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) override;
         void setColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) override;
         void setFont(const std::string& family, intptr_t pointSize, intptr_t weight, bool italic) override;
-
-    protected:
-        void outRawString(const std::string& s) override;
-
     };
 }
 

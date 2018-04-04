@@ -32,6 +32,9 @@ namespace sterm
 {
     class TerminalBase
     {
+        virtual void outRawString(const std::string& s) = 0;
+        std::string getCurrentTime();
+
     public:
         TerminalBase() = default;
         TerminalBase(const TerminalBase&) = default;
@@ -50,9 +53,6 @@ namespace sterm
         void printRaw(const std::string& s);
         void printLine(const std::string& s);
         void printLineTm(const std::string& s);
-
-    protected:
-        virtual void outRawString(const std::string& s) = 0;
     };
 }
 

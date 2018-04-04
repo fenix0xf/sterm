@@ -50,6 +50,7 @@ namespace sterm
         ~MainWindow() override;
 
     public slots:
+        void on_action_Open_triggered();
         void on_action_Exit_triggered();
 
     };

@@ -26,6 +26,7 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include <fmt/format.h>
 #include <ui_MainWindow.h>
@@ -41,21 +42,40 @@ namespace sterm
         ui_->setupUi(this);
         term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< Call after ui_->setupUi(this)!
 
-        term_->setFont("Liberation Mono", 14);
+        setWindowTitle(QString::fromStdString(Version::get().getAppNameAndVersion()));
+
+        //TODO move to config file
+        term_->setFont("Liberation Mono", 24);
         term_->setColorForeground(0, 255, 0);
         term_->setColorBackground(0, 0, 0);
 
-        term_->printLineTm(fmt::format("*** Serial Terminal {:s} ***", gVersion.getVersionString()));
+        term_->printLineTm(fmt::format("*** {} ***", Version::get().getAppNameAndVersion()));
+    }
+
+    MainWindow::~MainWindow()
+    {
+        /// Workaround for std::unique_ptr<incomplete type> in hpp file.
+    }
+
+    void MainWindow::on_action_Open_triggered()
+    {
+        QStringList list;
+        list.append("/dev/ttyUSB-RS485"); //TODO move to config file
+
+        bool ok;
+        auto port = QInputDialog::getItem(this, "Select port", "Port", list, 0, true, &ok);
+
+        if (!ok)
+        {
+            return;
+        }
+
+        QMessageBox::information(this, nullptr, port);
     }
 
     void MainWindow::on_action_Exit_triggered()
     {
         QMessageBox::information(this, "Exit", "test");
         close();
-    }
-
-    MainWindow::~MainWindow()
-    {
-        /// Fix for std::unique_ptr<incomplete type> in hpp file.
     }
 }

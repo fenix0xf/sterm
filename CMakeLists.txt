@@ -51,12 +51,15 @@ add_executable(${TARGET_NAME} ${SOURCES})
 
 target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/lib/fmt/include)
 target_compile_options(${TARGET_NAME} PUBLIC ${CXX_WARNINGS})
+target_compile_definitions(${TARGET_NAME} PUBLIC $<$<CONFIG:Debug>:DEBUG>)
 
 add_subdirectory(lib/fmt)
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Widgets SerialPort REQUIRED)
 
-target_link_libraries(${TARGET_NAME} Qt5::Widgets fmt)
+target_link_libraries(${TARGET_NAME} Qt5::Widgets Qt5::SerialPort fmt)
 
-### Update BuildDate.hpp file for all targets.
-add_custom_target(__build_date_target COMMAND ${PROJECT_SOURCE_DIR}/build-date.py ../src/BuildDate.hpp)
-add_dependencies(${TARGET_NAME} __build_date_target)
+### Update BuildInfo.hpp in Release build only.
+if (CMAKE_BUILD_TYPE MATCHES ^Release$)
+    add_custom_target(__build_info_target COMMAND ${PROJECT_SOURCE_DIR}/build-info.py ../src/BuildInfo.hpp)
+    add_dependencies(${TARGET_NAME} __build_info_target)
+endif ()

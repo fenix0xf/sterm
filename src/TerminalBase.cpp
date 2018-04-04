@@ -23,7 +23,8 @@
  */
 
 #include "TerminalBase.hpp"
-#include <chrono>
+
+#include <ctime>
 #include <fmt/format.h>
 
 namespace sterm
@@ -40,6 +41,16 @@ namespace sterm
 
     void TerminalBase::printLineTm(const std::string& s)
     {
-        outRawString(fmt::format("ts: {}\n", s));
+
+
+        outRawString(fmt::format("{}: {}\n", getCurrentTime(), s));
+    }
+
+    std::string TerminalBase::getCurrentTime()
+    {
+        char s[128];
+        auto t = time(nullptr);
+        strftime(s, sizeof(s), "%T", localtime(&t));
+        return std::string{s};
     }
 }

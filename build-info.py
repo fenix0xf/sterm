@@ -37,7 +37,7 @@ outFileName = sys.argv[1]
 
 outTextFmt = \
     "/**\n" \
-    " * Auto generated build date header.\n" \
+    " * Auto generated build information header.\n" \
     " *\n" \
     " * @details\n" \
     " *\n" \
@@ -46,10 +46,12 @@ outTextFmt = \
     " * BUILD_DATE_LSTR is current Local time string.\n" \
     " *\n" \
     " */\n\n" \
-    "#include <ctime>\n\n" \
-    "const time_t BUILD_DATE        = {0}; ///< {1}\n" \
-    "const char   BUILD_DATE_STR[]  = \"{1}\";\n" \
-    "const char   BUILD_DATE_LSTR[] = \"{2}\";\n"
+    "#include <ctime>\n" \
+    "#include <string>\n\n" \
+    "namespace build_info\n{{\n" \
+    "    const time_t      BUILD_DATE = {0}; ///< {1}\n" \
+    "    const std::string BUILD_DATE_STR{{\"{1}\"}};\n" \
+    "    const std::string BUILD_DATE_LSTR{{\"{2}\"}};\n}}\n"
 
 utc = datetime.utcnow().replace(tzinfo=timezone.utc)
 local = utc.astimezone(tz=None)
