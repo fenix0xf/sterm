@@ -34,11 +34,12 @@
 
 namespace
 {
-    const size_t VERSION_MAJOR    = 0;
-    const size_t VERSION_MINOR    = 2;
-    const size_t VERSION_REVISION = 2;
+    constexpr size_t VERSION_MAJOR    = 0;
+    constexpr size_t VERSION_MINOR    = 2;
+    constexpr size_t VERSION_REVISION = 2;
 
-    const std::string APP_NAME{"Serial Terminal"};
+    constexpr char APP_NAME[]       = "Serial Terminal";
+    constexpr char APP_SHORT_NAME[] = "sterm";
 }
 
 #ifdef DEBUG
@@ -102,7 +103,7 @@ namespace sterm
             return build_info::BUILD_DATE_LSTR;
         }
 
-        const std::string& getAppName() const
+        const std::string getAppName() const
         {
             return APP_NAME;
         }
@@ -114,7 +115,10 @@ namespace sterm
 
         static const Version& get()
         {
-            static const Version version(VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, build_info::BUILD_DATE);
+            static const Version version(VERSION_MAJOR,
+                                         VERSION_MINOR,
+                                         VERSION_REVISION,
+                                         build_info::BUILD_DATE);
             return version;
         }
     };

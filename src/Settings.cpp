@@ -22,37 +22,49 @@
  * SOFTWARE.
  */
 
-#ifndef STERM_TERMINALBASE_HPP
-#define STERM_TERMINALBASE_HPP
+#include "Settings.hpp"
 
-#include <string>
+#include <QString>
+#include <QSettings>
+#include <Version.hpp>
+
+namespace
+{
+    const char CommonGroup[] = "Common";
+    const char PortList[]    = "PortList";
+}
 
 namespace sterm
 {
-    class TerminalBase
+    Settings::Settings()
+        : settings_{std::make_unique<QSettings>(QString::fromStdString(APP_SHORT_NAME),
+                                                QString::fromStdString(APP_SHORT_NAME))}
     {
-        virtual void outRawString(const std::string& s) = 0;
-        std::string getCurrentTime();
+    }
 
-    public:
-        TerminalBase() = default;
-        TerminalBase(const TerminalBase&) = default;
-        TerminalBase(TerminalBase&&) = default;
-        TerminalBase& operator=(const TerminalBase&) = default;
-        TerminalBase& operator=(TerminalBase&&) = default;
-        virtual ~TerminalBase() = default;
+    Settings& Settings::get()
+    {
+        static Settings settings{};
+        return settings;
+    }
 
-        virtual void setColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) = 0;
-        virtual void setColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) = 0;
-        virtual void setFont(const std::string& family,
-                             intptr_t pointSize = -1,
-                             intptr_t weight = -1,
-                             bool italic = false) = 0;
+    const QStringList Settings::getPortList() const
+    {
+        return QStringList{};
+    }
 
-        void printRaw(const std::string& s);
-        void printLine(const std::string& s);
-        void printLineTm(const std::string& s);
-    };
+    void Settings::setPortList(const QStringList& list)
+    {
+        settings_->beginGroup(CommonGroup);
+        settings_->beginWriteArray(PortList, list.count());
+
+        for (int i = 0; i < list.count(); ++i)
+        {
+            settings_->setArrayIndex(i);
+            settings_->setValue("value", list.at(i));
+        }
+
+        settings_->endArray();
+        settings_->endGroup();
+    }
 }
-
-#endif //STERM_TERMINALBASE_HPP

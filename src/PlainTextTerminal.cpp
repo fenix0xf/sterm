@@ -24,8 +24,8 @@
 
 #include "PlainTextTerminal.hpp"
 
-#include <QPlainTextEdit>
 #include <QFont>
+#include <QPlainTextEdit>
 
 namespace sterm
 {
@@ -54,7 +54,10 @@ namespace sterm
         plainTextEdit_.setPalette(palette);
     }
 
-    void PlainTextTerminal::setFont(const std::string& family, intptr_t pointSize, intptr_t weight, bool italic)
+    void PlainTextTerminal::setFont(const std::string& family,
+                                    intptr_t pointSize,
+                                    intptr_t weight,
+                                    bool italic)
     {
         plainTextEdit_.setFont(QFont{QString::fromStdString(family), (int)pointSize, (int)weight, italic});
     }

@@ -22,37 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef STERM_TERMINALBASE_HPP
-#define STERM_TERMINALBASE_HPP
+#ifndef STERM_SETTINGS_HPP
+#define STERM_SETTINGS_HPP
 
-#include <string>
+#include <memory>
+#include <QStringList>
+
+class QSettings;
 
 namespace sterm
 {
-    class TerminalBase
+    class Settings
     {
-        virtual void outRawString(const std::string& s) = 0;
-        std::string getCurrentTime();
+        std::unique_ptr<QSettings> settings_;
 
     public:
-        TerminalBase() = default;
-        TerminalBase(const TerminalBase&) = default;
-        TerminalBase(TerminalBase&&) = default;
-        TerminalBase& operator=(const TerminalBase&) = default;
-        TerminalBase& operator=(TerminalBase&&) = default;
-        virtual ~TerminalBase() = default;
+        Settings();
+        Settings(const Settings&) = delete;
+        Settings(Settings&&) = delete;
+        Settings& operator=(const Settings&) = delete;
+        Settings& operator=(Settings&&) = delete;
+        ~Settings() = default;
 
-        virtual void setColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) = 0;
-        virtual void setColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) = 0;
-        virtual void setFont(const std::string& family,
-                             intptr_t pointSize = -1,
-                             intptr_t weight = -1,
-                             bool italic = false) = 0;
+        static Settings& get();
 
-        void printRaw(const std::string& s);
-        void printLine(const std::string& s);
-        void printLineTm(const std::string& s);
+        const QStringList getPortList() const;
+        void setPortList(const QStringList& list);
     };
 }
 
-#endif //STERM_TERMINALBASE_HPP
+#endif //STERM_SETTINGS_HPP

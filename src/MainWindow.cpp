@@ -27,12 +27,16 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QStringList>
 
 #include <fmt/format.h>
-#include <ui_MainWindow.h>
 
-#include <PlainTextTerminal.hpp>
+#include <ui_MainWindow.h>
+#include <ui_SelectPortDialog.h>
+
 #include <Version.hpp>
+#include <Settings.hpp>
+#include <PlainTextTerminal.hpp>
 
 namespace sterm
 {
@@ -45,9 +49,9 @@ namespace sterm
         setWindowTitle(QString::fromStdString(Version::get().getAppNameAndVersion()));
 
         //TODO move to config file
-        term_->setFont("Liberation Mono", 24);
-        term_->setColorForeground(0, 255, 0);
-        term_->setColorBackground(0, 0, 0);
+        term_->setFont("Liberation Mono", 16);
+        term_->setColorForeground(117, 231, 9); //117, 231, 9
+        term_->setColorBackground(46, 52, 54); //46, 52, 54
 
         term_->printLineTm(fmt::format("*** {} ***", Version::get().getAppNameAndVersion()));
     }
@@ -61,6 +65,9 @@ namespace sterm
     {
         QStringList list;
         list.append("/dev/ttyUSB-RS485"); //TODO move to config file
+        list.append("/dev/ttyUSB-UART"); //TODO move to config file
+
+        Settings::get().setPortList(list);
 
         bool ok;
         auto port = QInputDialog::getItem(this, "Select port", "Port", list, 0, true, &ok);

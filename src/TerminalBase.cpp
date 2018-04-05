@@ -25,7 +25,14 @@
 #include "TerminalBase.hpp"
 
 #include <ctime>
+#include <stdexcept>
+
 #include <fmt/format.h>
+
+namespace
+{
+    constexpr size_t NSEC_IN_SEC = 1000000;
+}
 
 namespace sterm
 {
@@ -41,16 +48,26 @@ namespace sterm
 
     void TerminalBase::printLineTm(const std::string& s)
     {
-
-
-        outRawString(fmt::format("{}: {}\n", getCurrentTime(), s));
+        outRawString(fmt::format("[{}]: {}\n", getCurrentTime(), s));
     }
 
     std::string TerminalBase::getCurrentTime()
     {
-        char s[128];
-        auto t = time(nullptr);
-        strftime(s, sizeof(s), "%T", localtime(&t));
-        return std::string{s};
+        char            buf[128];
+        struct timespec ts;
+
+        if (timespec_get(&ts, TIME_UTC) != TIME_UTC)
+        {
+            throw std::runtime_error("timespec_get()");
+        }
+
+        const size_t len = strftime(buf, sizeof(buf), "%T", localtime(&ts.tv_sec));
+
+        if (len == 0)
+        {
+            throw std::runtime_error("strftime()");
+        }
+
+        return fmt::format("{}.{}", buf, ts.tv_nsec / NSEC_IN_SEC);
     }
 }

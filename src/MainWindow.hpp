@@ -27,7 +27,6 @@
 
 #include <memory>
 #include <QMainWindow>
-#include <ui_MainWindow.h>
 
 namespace Ui
 {
