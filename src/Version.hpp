@@ -29,25 +29,6 @@
 #include <cstddef>
 #include <string>
 
-#include <fmt/format.h>
-#include <BuildInfo.hpp>
-
-namespace
-{
-    constexpr size_t VERSION_MAJOR    = 0;
-    constexpr size_t VERSION_MINOR    = 2;
-    constexpr size_t VERSION_REVISION = 2;
-
-    constexpr char APP_NAME[]       = "Serial Terminal";
-    constexpr char APP_SHORT_NAME[] = "sterm";
-}
-
-#ifdef DEBUG
-#define APP_DEBUG   " debug"
-#else
-#define APP_DEBUG   ""
-#endif
-
 namespace sterm
 {
     class Version
@@ -57,13 +38,7 @@ namespace sterm
         size_t revision_;
         time_t buildTime_;
 
-        Version(size_t major, size_t minor, size_t revision, time_t buildTime)
-            : major_(major),
-              minor_(minor),
-              revision_(revision),
-              buildTime_(buildTime)
-        {
-        }
+        Version(size_t major, size_t minor, size_t revision, time_t buildTime);
 
     public:
         Version() = delete;
@@ -93,34 +68,13 @@ namespace sterm
             return buildTime_;
         }
 
-        std::string getVersionString() const
-        {
-            return fmt::format("v{:d}.{:d}.{:d}" APP_DEBUG, getMajor(), getMinor(), getRevision());
-        }
+        std::string getVersionString() const;
+        std::string getBuildDate() const;
+        std::string getAppName() const;
+        std::string getAppShortName() const;
+        std::string getAppNameAndVersion() const;
 
-        std::string getBuildDate() const
-        {
-            return build_info::BUILD_DATE_LSTR;
-        }
-
-        const std::string getAppName() const
-        {
-            return APP_NAME;
-        }
-
-        std::string getAppNameAndVersion() const
-        {
-            return fmt::format("{:s} {:s}", getAppName(), getVersionString());
-        }
-
-        static const Version& get()
-        {
-            static const Version version(VERSION_MAJOR,
-                                         VERSION_MINOR,
-                                         VERSION_REVISION,
-                                         build_info::BUILD_DATE);
-            return version;
-        }
+        static const Version& get();
     };
 }
 

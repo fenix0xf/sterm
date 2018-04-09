@@ -43,11 +43,24 @@ set(CXX_WARNINGS
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-file(GLOB SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.[h,c]pp)
-
 set(TARGET_NAME sterm)
 
-add_executable(${TARGET_NAME} ${SOURCES})
+file(GLOB SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.[h,c]pp)
+
+if (UNIX AND NOT APPLE)
+    message(">>> Linux build <<<")
+    file(GLOB PLATFORM_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.Linux.[h,c]pp)
+elseif (APPLE)
+    message(FATAL_ERROR "Apple platform is not supported!")
+    #    message(">>> MacOS build <<<")
+    #    file(GLOB PLATFORM_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.MacOS.[h,c]pp)
+elseif (WIN32)
+    message(FATAL_ERROR "Windows platform is not supported!")
+    #    message(">>> Windows build <<<")
+    #    file(GLOB PLATFORM_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.Windows.[h,c]pp)
+endif ()
+
+add_executable(${TARGET_NAME} ${SOURCES} ${PLATFORM_SOURCES})
 
 target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/lib/fmt/include)
 target_compile_options(${TARGET_NAME} PUBLIC ${CXX_WARNINGS})
@@ -58,8 +71,5 @@ find_package(Qt5 COMPONENTS Widgets SerialPort REQUIRED)
 
 target_link_libraries(${TARGET_NAME} Qt5::Widgets Qt5::SerialPort fmt)
 
-### Update BuildInfo.hpp in Release build only.
-if (CMAKE_BUILD_TYPE MATCHES ^Release$)
-    add_custom_target(__build_info_target COMMAND ${PROJECT_SOURCE_DIR}/build-info.py ../src/BuildInfo.hpp)
-    add_dependencies(${TARGET_NAME} __build_info_target)
-endif ()
+add_custom_target(__build_info_target COMMAND ${PROJECT_SOURCE_DIR}/build-info.py ../src/BuildInfo.hpp)
+add_dependencies(${TARGET_NAME} __build_info_target)

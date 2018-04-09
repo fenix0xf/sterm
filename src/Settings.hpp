@@ -46,7 +46,7 @@ namespace sterm
 
         static Settings& get();
 
-        const QStringList getPortList() const;
+        const QStringList getSystemPortList() const;
         void setPortList(const QStringList& list);
     };
 }

@@ -63,14 +63,14 @@ namespace sterm
 
     void MainWindow::on_action_Open_triggered()
     {
-        QStringList list;
-        list.append("/dev/ttyUSB-RS485"); //TODO move to config file
-        list.append("/dev/ttyUSB-UART"); //TODO move to config file
-
-        Settings::get().setPortList(list);
-
         bool ok;
-        auto port = QInputDialog::getItem(this, "Select port", "Port", list, 0, true, &ok);
+        auto port = QInputDialog::getItem(this,
+                                          "Select port",
+                                          "Port",
+                                          Settings::get().getSystemPortList(),
+                                          0,
+                                          true,
+                                          &ok);
 
         if (!ok)
         {

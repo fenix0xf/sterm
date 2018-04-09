@@ -26,6 +26,7 @@
 
 #include <QString>
 #include <QSettings>
+#include <QSerialPortInfo>
 #include <Version.hpp>
 
 namespace
@@ -37,8 +38,8 @@ namespace
 namespace sterm
 {
     Settings::Settings()
-        : settings_{std::make_unique<QSettings>(QString::fromStdString(APP_SHORT_NAME),
-                                                QString::fromStdString(APP_SHORT_NAME))}
+        : settings_{std::make_unique<QSettings>(QString::fromStdString(Version::get().getAppShortName()),
+                                                QString::fromStdString(Version::get().getAppShortName()))}
     {
     }
 
@@ -48,9 +49,17 @@ namespace sterm
         return settings;
     }
 
-    const QStringList Settings::getPortList() const
+    const QStringList Settings::getSystemPortList() const
     {
-        return QStringList{};
+        auto ports = QSerialPortInfo::availablePorts();
+        auto names = QStringList{};
+
+        for (auto& port : ports)
+        {
+            names.append(port.portName());
+        }
+
+        return names;
     }
 
     void Settings::setPortList(const QStringList& list)
