@@ -65,23 +65,14 @@ namespace sterm
     {
         SelectPortDialog dlg(this);
 
-        dlg.exec();
+        const int ret = dlg.exec();
 
-//        bool ok;
-//        auto port = QInputDialog::getItem(this,
-//                                          "Select port",
-//                                          "Port",
-//                                          Settings::get().getSystemPortList(),
-//                                          0,
-//                                          true,
-//                                          &ok);
-//
-//        if (!ok)
-//        {
-//            return;
-//        }
-//
-//        QMessageBox::information(this, nullptr, port);
+        if (ret == QDialog::Rejected)
+        {
+            return;
+        }
+
+        QMessageBox::information(this, nullptr, dlg.getPort());
     }
 
     void MainWindow::on_action_Exit_triggered()

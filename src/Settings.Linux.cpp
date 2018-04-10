@@ -26,6 +26,7 @@
 
 #include <experimental/filesystem>
 #include <string_view>
+#include <exception>
 
 #include <QStringList>
 #include <QSerialPortInfo>
@@ -42,34 +43,47 @@ namespace sterm
 {
     const QStringList Settings::getSystemPortList() const
     {
-        auto ports = QSerialPortInfo::availablePorts();
-        auto names = QStringList{};
-
-        for (const auto& port : ports)
+        try
         {
-            names.append(port.systemLocation());
-            fmt::print("{}\n", port.systemLocation().toStdString());
-        }
+            auto ports = QSerialPortInfo::availablePorts();
+            auto names = QStringList{};
 
-        const fs::path rootDev{kSysDevDir};
+#ifdef DEBUG
+            names.append("/dev/ttyUSB-TEST0");
+            names.append("/dev/ttyUSB-TEST1");
+            names.append("/dev/ttyUSB-TEST2");
+            names.append("/dev/ttyUSB-TEST3");
+#endif
 
-        for (const auto& entry : fs::directory_iterator(rootDev))
-        {
-            if (!fs::is_symlink(entry))
+            for (const auto& port : ports)
             {
-                continue;
+                names.append(port.systemLocation());
             }
 
-            auto link = rootDev / fs::read_symlink(entry);
+            const fs::path rootDev{kSysDevDir};
 
-            if (names.contains(QString::fromUtf8(std::data(link.native()),
-                                                 static_cast<int>(std::size(link.native())))))
+            for (const auto& entry : fs::directory_iterator(rootDev))
             {
-                names.append(QString::fromUtf8(std::data(entry.path().native()),
-                                               static_cast<int>(std::size(entry.path().native()))));
-            }
-        }
+                if (!fs::is_symlink(entry))
+                {
+                    continue;
+                }
 
-        return names;
+                auto link = rootDev / fs::read_symlink(entry);
+
+                if (names.contains(QString::fromUtf8(std::data(link.native()),
+                                                     static_cast<int>(std::size(link.native())))))
+                {
+                    names.append(QString::fromUtf8(std::data(entry.path().native()),
+                                                   static_cast<int>(std::size(entry.path().native()))));
+                }
+            }
+
+            return names;
+        }
+        catch (const std::exception& e)
+        {
+            return QStringList{e.what()};
+        }
     }
 }

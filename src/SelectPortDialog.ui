@@ -30,7 +30,11 @@
                                     </widget>
                                 </item>
                                 <item row="0" column="1">
-                                    <widget class="QComboBox" name="portComboBox"/>
+                                    <widget class="QComboBox" name="portComboBox">
+                                        <property name="editable">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
                                 </item>
                                 <item row="1" column="0">
                                     <widget class="QLabel" name="label_2">
@@ -40,7 +44,11 @@
                                     </widget>
                                 </item>
                                 <item row="1" column="1">
-                                    <widget class="QComboBox" name="baudRateComboBox"/>
+                                    <widget class="QComboBox" name="baudRateComboBox">
+                                        <property name="editable">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
                                 </item>
                                 <item row="2" column="0">
                                     <widget class="QLabel" name="label_3">
@@ -50,7 +58,11 @@
                                     </widget>
                                 </item>
                                 <item row="2" column="1">
-                                    <widget class="QComboBox" name="parityComboBox"/>
+                                    <widget class="QComboBox" name="parityComboBox">
+                                        <property name="editable">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
                                 </item>
                             </layout>
                         </item>

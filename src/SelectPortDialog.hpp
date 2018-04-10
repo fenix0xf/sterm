@@ -46,6 +46,8 @@ namespace sterm
         SelectPortDialog& operator=(const SelectPortDialog&) = delete;
         SelectPortDialog& operator=(SelectPortDialog&&) = delete;
         ~SelectPortDialog();
+
+        QString getPort();
     };
 }
 

@@ -25,6 +25,7 @@
 #include "SelectPortDialog.hpp"
 
 #include <ui_SelectPortDialog.h>
+#include "Settings.hpp"
 
 namespace sterm
 {
@@ -33,10 +34,27 @@ namespace sterm
           selectPortDialog_{std::make_unique<Ui::SelectPortDialog>()}
     {
         selectPortDialog_->setupUi(this);
+        selectPortDialog_->portComboBox->addItems(Settings::get().getSystemPortList());
+
+        const auto defaultPort = Settings::get().getDefaultPort();
+
+        if (int idx = selectPortDialog_->portComboBox->findText(defaultPort); idx != -1)
+        {
+            selectPortDialog_->portComboBox->setCurrentIndex(idx);
+        }
+        else
+        {
+            selectPortDialog_->portComboBox->setCurrentText(defaultPort);
+        }
     }
 
     SelectPortDialog::~SelectPortDialog()
     {
-        /// Workaround for std::unique_ptr<incomplete type> in hpp file.
+        Settings::get().setDefaultPort(selectPortDialog_->portComboBox->currentText());
+    }
+
+    QString SelectPortDialog::getPort()
+    {
+        return selectPortDialog_->portComboBox->currentText();
     }
 }
