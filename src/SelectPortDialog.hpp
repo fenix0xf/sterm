@@ -22,35 +22,31 @@
  * SOFTWARE.
  */
 
-#ifndef STERM_SETTINGS_HPP
-#define STERM_SETTINGS_HPP
+#ifndef STERM_SELECTPORTDIALOG_HPP
+#define STERM_SELECTPORTDIALOG_HPP
 
 #include <memory>
-#include <cstdint>
-#include <QStringList>
+#include <QDialog>
 
-class QSettings;
+namespace Ui
+{
+    class SelectPortDialog;
+}
 
 namespace sterm
 {
-    class Settings
+    class SelectPortDialog : public QDialog
     {
-        std::unique_ptr<QSettings> settings_;
+        std::unique_ptr<Ui::SelectPortDialog> selectPortDialog_;
 
     public:
-        Settings(std::string_view appName);
-        Settings(const Settings&) = delete;
-        Settings(Settings&&) = delete;
-        Settings& operator=(const Settings&) = delete;
-        Settings& operator=(Settings&&) = delete;
-        ~Settings() = default;
-
-        static Settings& get();
-
-        const QStringList getSystemPortList() const;
-        QString getDefaultPort() const;
-        void setDefaultPort(const QString& port);
+        SelectPortDialog(QWidget* parent);
+        SelectPortDialog(const SelectPortDialog&) = delete;
+        SelectPortDialog(SelectPortDialog&&) = delete;
+        SelectPortDialog& operator=(const SelectPortDialog&) = delete;
+        SelectPortDialog& operator=(SelectPortDialog&&) = delete;
+        ~SelectPortDialog();
     };
 }
 
-#endif //STERM_SETTINGS_HPP
+#endif //STERM_SELECTPORTDIALOG_HPP

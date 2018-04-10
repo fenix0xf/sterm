@@ -30,7 +30,7 @@
                                     </widget>
                                 </item>
                                 <item row="0" column="1">
-                                    <widget class="QComboBox" name="comboBox"/>
+                                    <widget class="QComboBox" name="portComboBox"/>
                                 </item>
                                 <item row="1" column="0">
                                     <widget class="QLabel" name="label_2">
@@ -40,7 +40,7 @@
                                     </widget>
                                 </item>
                                 <item row="1" column="1">
-                                    <widget class="QComboBox" name="comboBox_2"/>
+                                    <widget class="QComboBox" name="baudRateComboBox"/>
                                 </item>
                                 <item row="2" column="0">
                                     <widget class="QLabel" name="label_3">
@@ -50,7 +50,7 @@
                                     </widget>
                                 </item>
                                 <item row="2" column="1">
-                                    <widget class="QComboBox" name="comboBox_3"/>
+                                    <widget class="QComboBox" name="parityComboBox"/>
                                 </item>
                             </layout>
                         </item>

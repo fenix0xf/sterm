@@ -22,16 +22,26 @@
  * SOFTWARE.
  */
 
+#include <exception>
+#include <iostream>
+
 #include <QApplication>
 #include "MainWindow.hpp"
 
 int main(int argc, char* argv[])
 {
-    QApplication app{argc, argv};
-    QApplication::setQuitOnLastWindowClosed(true);
+    try
+    {
+        QApplication app{argc, argv};
+        QApplication::setQuitOnLastWindowClosed(true);
 
-    sterm::MainWindow mainWindow{};
-    mainWindow.show();
+        sterm::MainWindow mainWindow{};
+        mainWindow.show();
 
-    return QApplication::exec();
+        return QApplication::exec();
+    } catch (const std::exception& e)
+    {
+        std::cout << "Unhandled C++ exception:\n\t" << e.what() << std::endl << std::flush;
+        return 1;
+    }
 }

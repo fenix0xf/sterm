@@ -35,9 +35,9 @@ namespace sterm
         plainTextEdit_.setReadOnly(true);
     }
 
-    void PlainTextTerminal::outRawString(const std::string& s)
+    void PlainTextTerminal::outRawString(std::string_view s)
     {
-        plainTextEdit_.appendPlainText(QString::fromStdString(s));
+        plainTextEdit_.appendPlainText(QString::fromUtf8(std::data(s), static_cast<int>(std::size(s))));
     }
 
     void PlainTextTerminal::setColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
@@ -54,11 +54,12 @@ namespace sterm
         plainTextEdit_.setPalette(palette);
     }
 
-    void PlainTextTerminal::setFont(const std::string& family,
-                                    intptr_t pointSize,
-                                    intptr_t weight,
-                                    bool italic)
+    void PlainTextTerminal::setFont(std::string_view family, intptr_t pointSize, intptr_t weight, bool italic)
     {
-        plainTextEdit_.setFont(QFont{QString::fromStdString(family), (int)pointSize, (int)weight, italic});
+        plainTextEdit_.setFont(QFont{QString::fromUtf8(std::data(family),
+                                                       static_cast<int>(std::size(family))),
+                                     (int)pointSize,
+                                     (int)weight,
+                                     italic});
     }
 }

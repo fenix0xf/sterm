@@ -29,24 +29,27 @@
 
 #include <fmt/format.h>
 
+using namespace std::literals;
+
 namespace
 {
-    constexpr size_t NSEC_IN_SEC = 1000000;
+    constexpr size_t kNsecInSec = 1000000;
 }
 
 namespace sterm
 {
-    void TerminalBase::printRaw(const std::string& s)
+    void TerminalBase::printRaw(std::string_view s)
     {
         outRawString(s);
     }
 
-    void TerminalBase::printLine(const std::string& s)
+    void TerminalBase::printLine(std::string_view s)
     {
-        outRawString(s + '\n');
+        outRawString(s);
+        outRawString("\n"sv);
     }
 
-    void TerminalBase::printLineTm(const std::string& s)
+    void TerminalBase::printLineTm(std::string_view s)
     {
         outRawString(fmt::format("[{}]: {}\n", getCurrentTime(), s));
     }
@@ -68,6 +71,6 @@ namespace sterm
             throw std::runtime_error("strftime()");
         }
 
-        return fmt::format("{}.{}", buf, ts.tv_nsec / NSEC_IN_SEC);
+        return fmt::format("{}.{}", buf, ts.tv_nsec / kNsecInSec);
     }
 }

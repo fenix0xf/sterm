@@ -25,13 +25,13 @@
 #ifndef STERM_TERMINALBASE_HPP
 #define STERM_TERMINALBASE_HPP
 
-#include <string>
+#include <string_view>
 
 namespace sterm
 {
     class TerminalBase
     {
-        virtual void outRawString(const std::string& s) = 0;
+        virtual void outRawString(std::string_view s) = 0;
         std::string getCurrentTime();
 
     public:
@@ -44,14 +44,14 @@ namespace sterm
 
         virtual void setColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) = 0;
         virtual void setColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) = 0;
-        virtual void setFont(const std::string& family,
+        virtual void setFont(std::string_view family,
                              intptr_t pointSize = -1,
                              intptr_t weight = -1,
                              bool italic = false) = 0;
 
-        void printRaw(const std::string& s);
-        void printLine(const std::string& s);
-        void printLineTm(const std::string& s);
+        void printRaw(std::string_view s);
+        void printLine(std::string_view s);
+        void printLineTm(std::string_view s);
     };
 }
 

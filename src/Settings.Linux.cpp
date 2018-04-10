@@ -22,61 +22,54 @@
  * SOFTWARE.
  */
 
-#ifndef STERM_VERSION_HPP
-#define STERM_VERSION_HPP
+#include "Settings.hpp"
 
-#include <ctime>
-#include <cstddef>
-#include <string>
+#include <experimental/filesystem>
 #include <string_view>
+
+#include <QStringList>
+#include <QSerialPortInfo>
+#include <fmt/format.h>
+
+namespace fs = std::experimental::filesystem;
+
+namespace
+{
+    constexpr std::string_view kSysDevDir{"/dev"};
+}
 
 namespace sterm
 {
-    class Version
+    const QStringList Settings::getSystemPortList() const
     {
-        size_t major_;
-        size_t minor_;
-        size_t revision_;
-        time_t buildTime_;
+        auto ports = QSerialPortInfo::availablePorts();
+        auto names = QStringList{};
 
-        Version(size_t major, size_t minor, size_t revision, time_t buildTime);
-
-    public:
-        Version() = delete;
-        Version(const Version&) = delete;
-        Version(Version&&) = delete;
-        Version& operator=(const Version&) = delete;
-        Version& operator=(Version&&) = delete;
-        ~Version() = default;
-
-        size_t getMajor() const
+        for (const auto& port : ports)
         {
-            return major_;
+            names.append(port.systemLocation());
+            fmt::print("{}\n", port.systemLocation().toStdString());
         }
 
-        size_t getMinor() const
+        const fs::path rootDev{kSysDevDir};
+
+        for (const auto& entry : fs::directory_iterator(rootDev))
         {
-            return minor_;
+            if (!fs::is_symlink(entry))
+            {
+                continue;
+            }
+
+            auto link = rootDev / fs::read_symlink(entry);
+
+            if (names.contains(QString::fromUtf8(std::data(link.native()),
+                                                 static_cast<int>(std::size(link.native())))))
+            {
+                names.append(QString::fromUtf8(std::data(entry.path().native()),
+                                               static_cast<int>(std::size(entry.path().native()))));
+            }
         }
 
-        size_t getRevision() const
-        {
-            return revision_;
-        }
-
-        time_t getBuildTime() const
-        {
-            return buildTime_;
-        }
-
-        std::string getVersionString() const;
-        std::string_view getBuildDate() const;
-        std::string_view getAppName() const;
-        std::string_view getAppShortName() const;
-        std::string getAppNameAndVersion() const;
-
-        static const Version& get();
-    };
+        return names;
+    }
 }
-
-#endif //STERM_VERSION_HPP

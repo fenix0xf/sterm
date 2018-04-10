@@ -32,11 +32,11 @@
 #include <fmt/format.h>
 
 #include <ui_MainWindow.h>
-#include <ui_SelectPortDialog.h>
 
-#include <Version.hpp>
-#include <Settings.hpp>
-#include <PlainTextTerminal.hpp>
+#include "Version.hpp"
+#include "Settings.hpp"
+#include "SelectPortDialog.hpp"
+#include "PlainTextTerminal.hpp"
 
 namespace sterm
 {
@@ -63,21 +63,25 @@ namespace sterm
 
     void MainWindow::on_action_Open_triggered()
     {
-        bool ok;
-        auto port = QInputDialog::getItem(this,
-                                          "Select port",
-                                          "Port",
-                                          Settings::get().getSystemPortList(),
-                                          0,
-                                          true,
-                                          &ok);
+        SelectPortDialog dlg(this);
 
-        if (!ok)
-        {
-            return;
-        }
+        dlg.exec();
 
-        QMessageBox::information(this, nullptr, port);
+//        bool ok;
+//        auto port = QInputDialog::getItem(this,
+//                                          "Select port",
+//                                          "Port",
+//                                          Settings::get().getSystemPortList(),
+//                                          0,
+//                                          true,
+//                                          &ok);
+//
+//        if (!ok)
+//        {
+//            return;
+//        }
+//
+//        QMessageBox::information(this, nullptr, port);
     }
 
     void MainWindow::on_action_Exit_triggered()

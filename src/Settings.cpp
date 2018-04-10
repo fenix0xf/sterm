@@ -23,57 +23,50 @@
  */
 
 #include "Settings.hpp"
+#include <string_view>
 
 #include <QString>
 #include <QSettings>
-#include <QSerialPortInfo>
-#include <Version.hpp>
+
+#include "Version.hpp"
+
+using namespace std::literals;
 
 namespace
 {
-    const char CommonGroup[] = "Common";
-    const char PortList[]    = "PortList";
+    /// Zero terminated string (str.data() is safe).
+    constexpr std::string_view kCommonGroup = "Common"sv;
+    constexpr std::string_view kDefaultPort = "DefaultPort"sv;
 }
 
 namespace sterm
 {
-    Settings::Settings()
-        : settings_{std::make_unique<QSettings>(QString::fromStdString(Version::get().getAppShortName()),
-                                                QString::fromStdString(Version::get().getAppShortName()))}
+    Settings::Settings(std::string_view appName)
+        : settings_{std::make_unique<QSettings>(QString::fromUtf8(std::data(appName),
+                                                                  static_cast<int>(std::size(appName))),
+                                                QString::fromUtf8(std::data(appName),
+                                                                  static_cast<int>(std::size(appName))))}
     {
     }
 
     Settings& Settings::get()
     {
-        static Settings settings{};
+        static Settings settings{Version::get().getAppShortName()};
         return settings;
     }
 
-    const QStringList Settings::getSystemPortList() const
+    QString Settings::getDefaultPort() const
     {
-        auto ports = QSerialPortInfo::availablePorts();
-        auto names = QStringList{};
-
-        for (auto& port : ports)
-        {
-            names.append(port.portName());
-        }
-
-        return names;
+        settings_->beginGroup(kCommonGroup.data());
+        QString ret = settings_->value(kDefaultPort.data()).toString();
+        settings_->endGroup();
+        return ret;
     }
 
-    void Settings::setPortList(const QStringList& list)
+    void Settings::setDefaultPort(const QString& port)
     {
-        settings_->beginGroup(CommonGroup);
-        settings_->beginWriteArray(PortList, list.count());
-
-        for (int i = 0; i < list.count(); ++i)
-        {
-            settings_->setArrayIndex(i);
-            settings_->setValue("value", list.at(i));
-        }
-
-        settings_->endArray();
+        settings_->beginGroup(kCommonGroup.data());
+        settings_->setValue(kDefaultPort.data(), port);
         settings_->endGroup();
     }
 }

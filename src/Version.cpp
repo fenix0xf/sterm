@@ -23,18 +23,20 @@
  */
 
 #include "Version.hpp"
-
 #include <fmt/format.h>
-#include <BuildInfo.hpp>
+
+#include "BuildInfo.hpp"
+
+using namespace std::literals;
 
 namespace
 {
-    constexpr size_t VERSION_MAJOR    = 0;
-    constexpr size_t VERSION_MINOR    = 2;
-    constexpr size_t VERSION_REVISION = 2;
+    constexpr size_t kVersionMajor    = 0;
+    constexpr size_t kVersionMinor    = 2;
+    constexpr size_t kVersionRevision = 2;
 
-    constexpr char APP_NAME[]       = "Serial Terminal";
-    constexpr char APP_SHORT_NAME[] = "sterm";
+    constexpr std::string_view kAppName{"Serial Terminal"sv};
+    constexpr std::string_view kAppShortName{"sterm"sv};
 }
 
 #ifdef DEBUG
@@ -58,19 +60,19 @@ namespace sterm
         return fmt::format("v{:d}.{:d}.{:d}" APP_DEBUG, getMajor(), getMinor(), getRevision());
     }
 
-    std::string Version::getBuildDate() const
+    std::string_view Version::getBuildDate() const
     {
         return build_info::BUILD_DATE_LSTR;
     }
 
-    std::string Version::getAppName() const
+    std::string_view Version::getAppName() const
     {
-        return APP_NAME;
+        return kAppName;
     }
 
-    std::string Version::getAppShortName() const
+    std::string_view Version::getAppShortName() const
     {
-        return APP_SHORT_NAME;
+        return kAppShortName;
     }
 
     std::string Version::getAppNameAndVersion() const
@@ -80,7 +82,7 @@ namespace sterm
 
     const Version& Version::get()
     {
-        static const Version version{VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, build_info::BUILD_DATE};
+        static const Version version{kVersionMajor, kVersionMinor, kVersionRevision, build_info::BUILD_DATE};
         return version;
     }
 }

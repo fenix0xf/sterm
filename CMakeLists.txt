@@ -50,6 +50,9 @@ file(GLOB SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.[h,c]pp)
 if (UNIX AND NOT APPLE)
     message(">>> Linux build <<<")
     file(GLOB PLATFORM_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} src/*.Linux.[h,c]pp)
+
+    add_library(stdc++fs UNKNOWN IMPORTED)
+    set_property(TARGET stdc++fs PROPERTY IMPORTED_LOCATION /usr/lib/libstdc++fs.a)
 elseif (APPLE)
     message(FATAL_ERROR "Apple platform is not supported!")
     #    message(">>> MacOS build <<<")
@@ -62,14 +65,14 @@ endif ()
 
 add_executable(${TARGET_NAME} ${SOURCES} ${PLATFORM_SOURCES})
 
-target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/lib/fmt/include)
+target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/lib/fmt/include)
 target_compile_options(${TARGET_NAME} PUBLIC ${CXX_WARNINGS})
 target_compile_definitions(${TARGET_NAME} PUBLIC $<$<CONFIG:Debug>:DEBUG>)
 
 add_subdirectory(lib/fmt)
 find_package(Qt5 COMPONENTS Widgets SerialPort REQUIRED)
 
-target_link_libraries(${TARGET_NAME} Qt5::Widgets Qt5::SerialPort fmt)
+target_link_libraries(${TARGET_NAME} Qt5::Widgets Qt5::SerialPort stdc++fs fmt)
 
 add_custom_target(__build_info_target COMMAND ${PROJECT_SOURCE_DIR}/build-info.py ../src/BuildInfo.hpp)
 add_dependencies(${TARGET_NAME} __build_info_target)

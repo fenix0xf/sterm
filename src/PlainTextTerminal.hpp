@@ -26,7 +26,7 @@
 #define STERM_PLAINTEXTTERMINAL_HPP
 
 #include <memory>
-#include <TerminalBase.hpp>
+#include "TerminalBase.hpp"
 
 class QPlainTextEdit;
 
@@ -35,14 +35,14 @@ namespace sterm
     class PlainTextTerminal final : public TerminalBase
     {
         QPlainTextEdit& plainTextEdit_;
-        void outRawString(const std::string& s) override;
+        void outRawString(std::string_view s) override;
 
     public:
         explicit PlainTextTerminal(QPlainTextEdit& plainTextEdit);
 
         void setColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) override;
         void setColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) override;
-        void setFont(const std::string& family, intptr_t pointSize, intptr_t weight, bool italic) override;
+        void setFont(std::string_view family, intptr_t pointSize, intptr_t weight, bool italic) override;
     };
 }
 

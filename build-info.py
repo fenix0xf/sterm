@@ -47,11 +47,12 @@ outTextFmt = \
     " *\n" \
     " */\n\n" \
     "#include <ctime>\n" \
-    "#include <string>\n\n" \
+    "#include <string_view>\n\n" \
     "namespace build_info\n{{\n" \
-    "    const time_t      BUILD_DATE = {0}; ///< {1}\n" \
-    "    const std::string BUILD_DATE_STR{{\"{1}\"}};\n" \
-    "    const std::string BUILD_DATE_LSTR{{\"{2}\"}};\n}}\n"
+    "    using namespace std::literals;\n\n" \
+    "    constexpr time_t           BUILD_DATE = {0}; ///< {1}\n" \
+    "    constexpr std::string_view BUILD_DATE_STR{{\"{1}\"sv}};\n" \
+    "    constexpr std::string_view BUILD_DATE_LSTR{{\"{2}\"sv}};\n}}\n"
 
 utc = datetime.utcnow().replace(tzinfo=timezone.utc)
 local = utc.astimezone(tz=None)
