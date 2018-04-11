@@ -64,7 +64,7 @@ namespace sterm
             return revision_;
         }
 
-        time_t getBuildTime() const
+        time_t getBuildUnixTime() const
         {
             return buildTime_;
         }

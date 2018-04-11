@@ -25,8 +25,12 @@
 #ifndef STERM_SETTINGS_HPP
 #define STERM_SETTINGS_HPP
 
+#include <tuple>
 #include <memory>
+#include <string>
+#include <string_view>
 #include <cstdint>
+
 #include <QStringList>
 
 class QSettings;
@@ -48,8 +52,12 @@ namespace sterm
         static Settings& get();
 
         const QStringList getSystemPortList() const;
+
         QString getDefaultPort() const;
         void setDefaultPort(const QString& port);
+
+        std::tuple<std::string, intptr_t, intptr_t, bool> getTerminalFont();
+        void setTrminalFont(std::string_view family, intptr_t pointSize, intptr_t weight, bool italic);
     };
 }
 

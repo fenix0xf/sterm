@@ -36,6 +36,7 @@ namespace fs = std::experimental::filesystem;
 
 namespace
 {
+    constexpr bool             kDebugAddTestPorts = false;
     constexpr std::string_view kSysDevDir{"/dev"};
 }
 
@@ -48,12 +49,13 @@ namespace sterm
             auto ports = QSerialPortInfo::availablePorts();
             auto names = QStringList{};
 
-#ifdef DEBUG
-            names.append("/dev/ttyUSB-TEST0");
-            names.append("/dev/ttyUSB-TEST1");
-            names.append("/dev/ttyUSB-TEST2");
-            names.append("/dev/ttyUSB-TEST3");
-#endif
+            if constexpr (kDebugAddTestPorts)
+            {
+                names.append("/dev/ttyUSB-TEST0");
+                names.append("/dev/ttyUSB-TEST1");
+                names.append("/dev/ttyUSB-TEST2");
+                names.append("/dev/ttyUSB-TEST3");
+            }
 
             for (const auto& port : ports)
             {

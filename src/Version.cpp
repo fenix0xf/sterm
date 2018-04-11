@@ -77,7 +77,7 @@ namespace sterm
 
     std::string Version::getAppNameAndVersion() const
     {
-        return fmt::format("{:s} {:s}", getAppName(), getVersionString());
+        return fmt::format("{} {} [{}]", getAppName(), getVersionString(), getBuildDate());
     }
 
     const Version& Version::get()

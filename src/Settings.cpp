@@ -35,8 +35,14 @@ using namespace std::literals;
 namespace
 {
     /// Zero terminated string (str.data() is safe).
-    constexpr std::string_view kCommonGroup = "Common"sv;
-    constexpr std::string_view kDefaultPort = "DefaultPort"sv;
+    constexpr std::string_view kCommonGroup       = "Common"sv;
+    constexpr std::string_view kCommonDefaultPort = "DefaultPort"sv;
+
+    constexpr std::string_view kTerminalFontGroup  = "TerminalFont"sv;
+    constexpr std::string_view kTerminalFontName   = "Name"sv;
+    constexpr std::string_view kTerminalFontSize   = "Size"sv;
+    constexpr std::string_view kTerminalFontWeight = "Weight"sv;
+    constexpr std::string_view kTerminalFontItalic = "Italic"sv;
 }
 
 namespace sterm
@@ -57,16 +63,38 @@ namespace sterm
 
     QString Settings::getDefaultPort() const
     {
-        settings_->beginGroup(kCommonGroup.data());
-        QString ret = settings_->value(kDefaultPort.data()).toString();
+        settings_->beginGroup(std::data(kCommonGroup));
+        QString ret = settings_->value(kCommonDefaultPort.data()).toString();
         settings_->endGroup();
         return ret;
     }
 
     void Settings::setDefaultPort(const QString& port)
     {
-        settings_->beginGroup(kCommonGroup.data());
-        settings_->setValue(kDefaultPort.data(), port);
+        settings_->beginGroup(std::data(kCommonGroup));
+        settings_->setValue(kCommonDefaultPort.data(), port);
+        settings_->endGroup();
+    }
+
+    std::tuple<std::string, intptr_t, intptr_t, bool> Settings::getTerminalFont()
+    {
+        settings_->beginGroup(kTerminalFontGroup.data());
+        const QString  fontName   = settings_->value(std::data(kTerminalFontName), "monospace").toString();
+        const intptr_t fontSize   = settings_->value(std::data(kTerminalFontSize), 12).toInt();
+        const intptr_t fontWeight = settings_->value(std::data(kTerminalFontWeight), -1).toInt();
+        const bool     fontItalic = settings_->value(std::data(kTerminalFontItalic), false).toBool();
+        settings_->endGroup();
+        return {fontName.toStdString(), fontSize, fontWeight, fontItalic};
+    }
+
+    void Settings::setTrminalFont(std::string_view family, intptr_t pointSize, intptr_t weight, bool italic)
+    {
+        settings_->beginGroup(std::data(kTerminalFontGroup));
+        settings_->setValue(kTerminalFontName.data(),
+                            QString::fromUtf8(std::data(family), static_cast<int>(std::size(family))));
+        settings_->setValue(std::data(kTerminalFontSize), static_cast<int>(pointSize));
+        settings_->setValue(std::data(kTerminalFontWeight), static_cast<int>(weight));
+        settings_->setValue(std::data(kTerminalFontItalic), italic);
         settings_->endGroup();
     }
 }

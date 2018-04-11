@@ -38,6 +38,8 @@
 #include "SelectPortDialog.hpp"
 #include "PlainTextTerminal.hpp"
 
+using namespace std::literals;
+
 namespace sterm
 {
     MainWindow::MainWindow()
@@ -48,12 +50,13 @@ namespace sterm
 
         setWindowTitle(QString::fromStdString(Version::get().getAppNameAndVersion()));
 
-        //TODO move to config file
-        term_->setFont("Liberation Mono", 16);
+        auto[fontName, pointSize, weight, italic] = Settings::get().getTerminalFont();
+        term_->setFont(fontName, pointSize, weight, italic);
+
         term_->setColorForeground(117, 231, 9); //117, 231, 9
         term_->setColorBackground(46, 52, 54); //46, 52, 54
 
-        term_->printLineTm(fmt::format("*** {} ***", Version::get().getAppNameAndVersion()));
+        term_->printLineTm(fmt::format("*** {} ***"sv, Version::get().getAppNameAndVersion()));
     }
 
     MainWindow::~MainWindow()
