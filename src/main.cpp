@@ -25,7 +25,9 @@
 #include <exception>
 #include <iostream>
 
+#include <QMessageBox>
 #include <QApplication>
+
 #include "MainWindow.hpp"
 
 int main(int argc, char* argv[])
@@ -39,9 +41,10 @@ int main(int argc, char* argv[])
         mainWindow.show();
 
         return QApplication::exec();
-    } catch (const std::exception& e)
+    }
+    catch (const std::exception& e)
     {
-        std::cout << "Unhandled C++ exception:\n\t" << e.what() << std::endl << std::flush;
+        std::cerr << "Unhandled C++ exception:\n\t" << e.what() << std::endl << std::flush;
         return 1;
     }
 }

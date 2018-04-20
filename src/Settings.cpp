@@ -23,6 +23,8 @@
  */
 
 #include "Settings.hpp"
+
+#include <stdexcept>
 #include <string_view>
 
 #include <QString>
@@ -30,19 +32,57 @@
 
 #include "Version.hpp"
 
-using namespace std::literals;
+#include <fmt/format.h>
 
 namespace
 {
-    /// Zero terminated string (str.data() is safe).
-    constexpr std::string_view kCommonGroup       = "Common"sv;
-    constexpr std::string_view kCommonDefaultPort = "DefaultPort"sv;
+    /// Zero terminated string (std::data(str) is safe).
+    constexpr std::string_view kCommonGroup       = "Common";
+    constexpr std::string_view kCommonDefaultPort = "DefaultPort";
 
-    constexpr std::string_view kTerminalFontGroup  = "TerminalFont"sv;
-    constexpr std::string_view kTerminalFontName   = "Name"sv;
-    constexpr std::string_view kTerminalFontSize   = "Size"sv;
-    constexpr std::string_view kTerminalFontWeight = "Weight"sv;
-    constexpr std::string_view kTerminalFontItalic = "Italic"sv;
+    constexpr std::string_view kTerminalGroup           = "Terminal";
+    constexpr std::string_view kTerminalFontName        = "FontName";
+    constexpr std::string_view kTerminalFontSize        = "FontSize";
+    constexpr std::string_view kTerminalFontWeight      = "FontWeight";
+    constexpr std::string_view kTerminalFontItalic      = "FontItalic";
+    constexpr std::string_view kTerminalBackgroundColor = "BackgroundRgba";
+    constexpr std::string_view kTerminalForegroundColor = "ForegroundRgba";
+}
+
+namespace detail
+{
+    bool hexColorIsValid(const QString& hexColor)
+    {
+        return (hexColor.length() == 10) && hexColor.startsWith("0x");
+    }
+
+    std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> hexToRgb(QString hexColor)
+    {
+        if (!hexColorIsValid(hexColor))
+        {
+            throw std::invalid_argument{"Invalid hexColor value!"};
+        }
+
+        hexColor = hexColor.remove(0, 2); /// Remove "0x" prefix
+        const auto r = static_cast<uint8_t>(std::stoul(hexColor.left(2).toStdString(), nullptr, 16));
+        hexColor = hexColor.remove(0, 2);
+        const auto g = static_cast<uint8_t>(std::stoul(hexColor.left(2).toStdString(), nullptr, 16));
+        hexColor = hexColor.remove(0, 2);
+        const auto b = static_cast<uint8_t>(std::stoul(hexColor.left(2).toStdString(), nullptr, 16));
+        hexColor = hexColor.remove(0, 2);
+        const auto a = static_cast<uint8_t>(std::stoul(hexColor.left(2).toStdString(), nullptr, 16));
+
+        return {r, g, b, a};
+    }
+
+    QString rgbToHex(std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> color)
+    {
+        return fmt::format("{:#04x}{:02x}{:02x}{:02x}",
+                           std::get<0>(color),
+                           std::get<1>(color),
+                           std::get<2>(color),
+                           std::get<3>(color)).c_str();
+    }
 }
 
 namespace sterm
@@ -61,40 +101,100 @@ namespace sterm
         return settings;
     }
 
-    QString Settings::getDefaultPort() const
+    QString Settings::loadDefaultPort() const
     {
         settings_->beginGroup(std::data(kCommonGroup));
-        QString ret = settings_->value(kCommonDefaultPort.data()).toString();
+        auto port = settings_->value(std::data(kCommonDefaultPort)).toString();
         settings_->endGroup();
-        return ret;
+        saveDefaultPort(port);
+        return port;
     }
 
-    void Settings::setDefaultPort(const QString& port)
+    void Settings::saveDefaultPort(const QString& port) const
     {
         settings_->beginGroup(std::data(kCommonGroup));
-        settings_->setValue(kCommonDefaultPort.data(), port);
+        settings_->setValue(std::data(kCommonDefaultPort), port);
         settings_->endGroup();
     }
 
-    std::tuple<std::string, intptr_t, intptr_t, bool> Settings::getTerminalFont()
+    std::tuple<std::string, intptr_t, intptr_t, bool> Settings::loadTerminalFont() const
     {
-        settings_->beginGroup(kTerminalFontGroup.data());
-        const QString  fontName   = settings_->value(std::data(kTerminalFontName), "monospace").toString();
+        settings_->beginGroup(std::data(kTerminalGroup));
+        const QString  fontName   = settings_->value(std::data(kTerminalFontName), "Liberation Mono")
+                                             .toString();
         const intptr_t fontSize   = settings_->value(std::data(kTerminalFontSize), 12).toInt();
         const intptr_t fontWeight = settings_->value(std::data(kTerminalFontWeight), -1).toInt();
         const bool     fontItalic = settings_->value(std::data(kTerminalFontItalic), false).toBool();
         settings_->endGroup();
+        saveTerminalFont(fontName.toStdString(), fontSize, fontWeight, fontItalic);
         return {fontName.toStdString(), fontSize, fontWeight, fontItalic};
     }
 
-    void Settings::setTrminalFont(std::string_view family, intptr_t pointSize, intptr_t weight, bool italic)
+    void Settings::saveTerminalFont(std::string_view family,
+                                    intptr_t pointSize,
+                                    intptr_t weight,
+                                    bool italic) const
     {
-        settings_->beginGroup(std::data(kTerminalFontGroup));
-        settings_->setValue(kTerminalFontName.data(),
+        settings_->beginGroup(std::data(kTerminalGroup));
+        settings_->setValue(std::data(kTerminalFontName),
                             QString::fromUtf8(std::data(family), static_cast<int>(std::size(family))));
         settings_->setValue(std::data(kTerminalFontSize), static_cast<int>(pointSize));
         settings_->setValue(std::data(kTerminalFontWeight), static_cast<int>(weight));
         settings_->setValue(std::data(kTerminalFontItalic), italic);
+        settings_->endGroup();
+    }
+
+    std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> Settings::loadColorBackground() const
+    {
+        constexpr std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> defValue = {46, 52, 54, 255};
+
+        settings_->beginGroup(std::data(kTerminalGroup));
+        QString rgba = settings_->value(std::data(kTerminalBackgroundColor), "").toString();
+        settings_->endGroup();
+
+        if (!detail::hexColorIsValid(rgba))
+        {
+            saveColorBackground(std::get<0>(defValue),
+                                std::get<1>(defValue),
+                                std::get<2>(defValue),
+                                std::get<3>(defValue));
+            return defValue;
+        }
+
+        return detail::hexToRgb(rgba);
+    }
+
+    void Settings::saveColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) const
+    {
+        settings_->beginGroup(std::data(kTerminalGroup));
+        settings_->setValue(std::data(kTerminalBackgroundColor), detail::rgbToHex({r, g, b, a}));
+        settings_->endGroup();
+    }
+
+    std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> Settings::loadColorForeground() const
+    {
+        constexpr std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> defValue = {117, 231, 9, 255};
+
+        settings_->beginGroup(std::data(kTerminalGroup));
+        QString rgba = settings_->value(std::data(kTerminalForegroundColor), "").toString();
+        settings_->endGroup();
+
+        if (!detail::hexColorIsValid(rgba))
+        {
+            saveColorForeground(std::get<0>(defValue),
+                                std::get<1>(defValue),
+                                std::get<2>(defValue),
+                                std::get<3>(defValue));
+            return defValue;
+        }
+
+        return detail::hexToRgb(rgba);
+    }
+
+    void Settings::saveColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) const
+    {
+        settings_->beginGroup(std::data(kTerminalGroup));
+        settings_->setValue(std::data(kTerminalForegroundColor), detail::rgbToHex({r, g, b, a}));
         settings_->endGroup();
     }
 }

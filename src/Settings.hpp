@@ -51,13 +51,25 @@ namespace sterm
 
         static Settings& get();
 
-        const QStringList getSystemPortList() const;
+        const QStringList loadSystemPortList() const;
 
-        QString getDefaultPort() const;
-        void setDefaultPort(const QString& port);
+        QString loadDefaultPort() const;
+        void saveDefaultPort(const QString& port) const;
 
-        std::tuple<std::string, intptr_t, intptr_t, bool> getTerminalFont();
-        void setTrminalFont(std::string_view family, intptr_t pointSize, intptr_t weight, bool italic);
+        std::tuple<std::string, intptr_t, intptr_t, bool> loadTerminalFont() const;
+        void saveTerminalFont(std::string_view family,
+                              intptr_t pointSize,
+                              intptr_t weight,
+                              bool italic) const;
+
+        /**
+         * @return RGBA
+         */
+        std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> loadColorBackground() const;
+        void saveColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) const;
+
+        std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> loadColorForeground() const;
+        void saveColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) const;
     };
 }
 

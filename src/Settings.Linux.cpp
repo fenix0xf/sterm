@@ -37,12 +37,12 @@ namespace fs = std::experimental::filesystem;
 namespace
 {
     constexpr bool             kDebugAddTestPorts = false;
-    constexpr std::string_view kSysDevDir{"/dev"};
+    constexpr std::string_view kSysDevDir         = "/dev";
 }
 
 namespace sterm
 {
-    const QStringList Settings::getSystemPortList() const
+    const QStringList Settings::loadSystemPortList() const
     {
         try
         {

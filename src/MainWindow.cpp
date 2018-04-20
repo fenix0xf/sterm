@@ -38,8 +38,6 @@
 #include "SelectPortDialog.hpp"
 #include "PlainTextTerminal.hpp"
 
-using namespace std::literals;
-
 namespace sterm
 {
     MainWindow::MainWindow()
@@ -50,13 +48,16 @@ namespace sterm
 
         setWindowTitle(QString::fromStdString(Version::get().getAppNameAndVersion()));
 
-        auto[fontName, pointSize, weight, italic] = Settings::get().getTerminalFont();
+        auto[fontName, pointSize, weight, italic] = Settings::get().loadTerminalFont();
         term_->setFont(fontName, pointSize, weight, italic);
 
-        term_->setColorForeground(117, 231, 9); //117, 231, 9
-        term_->setColorBackground(46, 52, 54); //46, 52, 54
+        auto[r, g, b, a] = Settings::get().loadColorBackground();
+        term_->setColorBackground(r, g, b, a);
 
-        term_->printLineTm(fmt::format("*** {} ***"sv, Version::get().getAppNameAndVersion()));
+        auto[r1, g1, b1, a1] = Settings::get().loadColorForeground();
+        term_->setColorForeground(r1, g1, b1, a1);
+
+        term_->printLineTm(fmt::format("*** {} ***", Version::get().getAppNameAndVersion()));
     }
 
     MainWindow::~MainWindow()
