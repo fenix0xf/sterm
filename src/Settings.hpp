@@ -31,6 +31,8 @@
 #include <string_view>
 #include <cstdint>
 
+#include <QSize>
+#include <QPoint>
 #include <QStringList>
 
 class QSettings;
@@ -68,8 +70,20 @@ namespace sterm
         std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> loadColorBackground() const;
         void saveColorBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) const;
 
+        /**
+         * @return RGBA
+         */
         std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> loadColorForeground() const;
         void saveColorForeground(uint8_t r, uint8_t g, uint8_t b, uint8_t a) const;
+
+        QSize loadMainWindowSize() const;
+        void saveMainWindowSize(const QSize& size) const;
+
+        QPoint loadMainWindowPosition() const;
+        void saveMainWindowPosition(const QPoint& position) const;
+
+        bool loadMainWindowMaximizedState() const;
+        void saveMainWindowMaximizedState(bool maximized) const;
     };
 }
 

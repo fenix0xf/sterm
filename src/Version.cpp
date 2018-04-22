@@ -27,16 +27,14 @@
 
 #include "BuildInfo.hpp"
 
-using namespace std::literals;
-
 namespace
 {
     constexpr size_t kVersionMajor    = 0;
-    constexpr size_t kVersionMinor    = 2;
-    constexpr size_t kVersionRevision = 2;
+    constexpr size_t kVersionMinor    = 3;
+    constexpr size_t kVersionRevision = 0;
 
-    constexpr std::string_view kAppName{"Serial Terminal"sv};
-    constexpr std::string_view kAppShortName{"sterm"sv};
+    constexpr std::string_view kAppName      = "Serial Terminal";
+    constexpr std::string_view kAppShortName = "sterm";
 }
 
 #ifdef DEBUG
@@ -77,7 +75,7 @@ namespace sterm
 
     std::string Version::getAppNameAndVersion() const
     {
-        return fmt::format("{} {} [{}]", getAppName(), getVersionString(), getBuildDate());
+        return fmt::format("{} {}", getAppName(), getVersionString());
     }
 
     const Version& Version::get()

@@ -29,6 +29,9 @@
 
 #include <QString>
 #include <QSettings>
+#include <QMainWindow>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #include "Version.hpp"
 
@@ -36,9 +39,14 @@
 
 namespace
 {
+    constexpr double kDefaultWindowSize = 0.8;
+
     /// Zero terminated string (std::data(str) is safe).
-    constexpr std::string_view kCommonGroup       = "Common";
-    constexpr std::string_view kCommonDefaultPort = "DefaultPort";
+    constexpr std::string_view kCommonGroup               = "Common";
+    constexpr std::string_view kCommonDefaultPort         = "DefaultPort";
+    constexpr std::string_view kCommonMainWindowSize      = "MainWindowSize";
+    constexpr std::string_view kCommonMainWindowPosition  = "MainWindowPosition";
+    constexpr std::string_view kCommonMainWindowMaximized = "MainWindowMaximized";
 
     constexpr std::string_view kTerminalGroup           = "Terminal";
     constexpr std::string_view kTerminalFontName        = "FontName";
@@ -82,6 +90,21 @@ namespace detail
                            std::get<1>(color),
                            std::get<2>(color),
                            std::get<3>(color)).c_str();
+    }
+
+    QMainWindow* getMainWindow()
+    {
+        for (auto& w: QApplication::topLevelWidgets())
+        {
+            QMainWindow* mainWindow = qobject_cast<QMainWindow*>(w);
+
+            if (mainWindow)
+            {
+                return mainWindow;
+            }
+        }
+
+        return nullptr;
     }
 }
 
@@ -195,6 +218,74 @@ namespace sterm
     {
         settings_->beginGroup(std::data(kTerminalGroup));
         settings_->setValue(std::data(kTerminalForegroundColor), detail::rgbToHex({r, g, b, a}));
+        settings_->endGroup();
+    }
+
+    QSize Settings::loadMainWindowSize() const
+    {
+        settings_->beginGroup(std::data(kCommonGroup));
+        auto size = settings_->value(std::data(kCommonMainWindowSize), QSize{0, 0}).toSize();
+        settings_->endGroup();
+
+        if (size.isNull())
+        {
+            auto desk = QApplication::desktop();
+            size = desk->availableGeometry(desk->primaryScreen()).size() * kDefaultWindowSize;
+        }
+
+        saveMainWindowSize(size);
+        return size;
+    }
+
+    void Settings::saveMainWindowSize(const QSize& size) const
+    {
+        settings_->beginGroup(std::data(kCommonGroup));
+        settings_->setValue(std::data(kCommonMainWindowSize), size);
+        settings_->endGroup();
+    }
+
+    QPoint Settings::loadMainWindowPosition() const
+    {
+        settings_->beginGroup(std::data(kCommonGroup));
+        auto position = settings_->value(std::data(kCommonMainWindowPosition), QPoint{0, 0}).toPoint();
+        settings_->endGroup();
+
+        if (position.isNull())
+        {
+            auto mainWindow = detail::getMainWindow();
+
+            if (mainWindow)
+            {
+                auto desk = QApplication::desktop();
+                position = desk->availableGeometry(desk->primaryScreen()).center() -
+                           mainWindow->rect().center();
+            }
+        }
+
+        saveMainWindowPosition(position);
+        return position;
+    }
+
+    void Settings::saveMainWindowPosition(const QPoint& position) const
+    {
+        settings_->beginGroup(std::data(kCommonGroup));
+        settings_->setValue(std::data(kCommonMainWindowPosition), position);
+        settings_->endGroup();
+    }
+
+    bool Settings::loadMainWindowMaximizedState() const
+    {
+        settings_->beginGroup(std::data(kCommonGroup));
+        auto maximized = settings_->value(std::data(kCommonMainWindowMaximized), false).toBool();
+        settings_->endGroup();
+        saveMainWindowMaximizedState(maximized);
+        return maximized;
+    }
+
+    void Settings::saveMainWindowMaximizedState(bool maximized) const
+    {
+        settings_->beginGroup(std::data(kCommonGroup));
+        settings_->setValue(std::data(kCommonMainWindowMaximized), maximized);
         settings_->endGroup();
     }
 }

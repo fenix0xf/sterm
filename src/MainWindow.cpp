@@ -47,31 +47,42 @@ namespace sterm
         term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< Call after ui_->setupUi(this)!
 
         setWindowTitle(QString::fromStdString(Version::get().getAppNameAndVersion()));
+        resize(Settings::get().loadMainWindowSize());
+        move(Settings::get().loadMainWindowPosition());
+        setWindowState(Settings::get().loadMainWindowMaximizedState() ?
+                       Qt::WindowMaximized :
+                       Qt::WindowNoState);
 
         auto[fontName, pointSize, weight, italic] = Settings::get().loadTerminalFont();
         term_->setFont(fontName, pointSize, weight, italic);
 
-        auto[r, g, b, a] = Settings::get().loadColorBackground();
-        term_->setColorBackground(r, g, b, a);
+        {
+            auto[r, g, b, a] = Settings::get().loadColorBackground();
+            term_->setColorBackground(r, g, b, a);
+        }
 
-        auto[r1, g1, b1, a1] = Settings::get().loadColorForeground();
-        term_->setColorForeground(r1, g1, b1, a1);
+        {
+            auto[r, g, b, a] = Settings::get().loadColorForeground();
+            term_->setColorForeground(r, g, b, a);
+        }
 
-        term_->printLineTm(fmt::format("*** {} ***", Version::get().getAppNameAndVersion()));
+        term_->printLineTm(fmt::format("*** {} [{}] ***",
+                                       Version::get().getAppNameAndVersion(),
+                                       Version::get().getBuildDate()));
     }
 
     MainWindow::~MainWindow()
     {
-        /// Workaround for std::unique_ptr<incomplete type> in hpp file.
+        Settings::get().saveMainWindowSize(size());
+        Settings::get().saveMainWindowPosition(pos());
+        Settings::get().saveMainWindowMaximizedState((windowState() & Qt::WindowMaximized) != 0);
     }
 
     void MainWindow::on_action_Open_triggered()
     {
         SelectPortDialog dlg(this);
 
-        const int ret = dlg.exec();
-
-        if (ret == QDialog::Rejected)
+        if (dlg.exec() == QDialog::Rejected)
         {
             return;
         }
