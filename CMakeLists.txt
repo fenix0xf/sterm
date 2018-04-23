@@ -38,6 +38,7 @@ set(CXX_WARNINGS
     -Wshadow
     -Wno-unused-function
     -Wno-unused-parameter
+    -Wno-float-conversion
     -Wnon-virtual-dtor)
 
 set(CMAKE_AUTOMOC ON)
