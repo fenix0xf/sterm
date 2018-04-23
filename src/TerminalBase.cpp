@@ -29,8 +29,6 @@
 
 #include <fmt/format.h>
 
-using namespace std::literals;
-
 namespace
 {
     constexpr size_t kNsecInSec = 1000000;
@@ -46,12 +44,11 @@ namespace sterm
     void TerminalBase::printLine(std::string_view s)
     {
         outRawString(s);
-        outRawString("\n"sv);
     }
 
     void TerminalBase::printLineTm(std::string_view s)
     {
-        outRawString(fmt::format("[{}]: {}\n", getCurrentTime(), s));
+        outRawString(fmt::format("[{}]: {}", getCurrentTime(), s));
     }
 
     std::string TerminalBase::getCurrentTime()
