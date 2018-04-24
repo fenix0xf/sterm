@@ -47,8 +47,8 @@ namespace sterm
         term_ = std::make_unique<PlainTextTerminal>(*ui_->plainTextEdit); ///< Call after ui_->setupUi(this)!
 
         setWindowTitle(QString::fromStdString(Version::get().getAppNameAndVersion()));
-        resize(Settings::get().loadMainWindowSize());
         move(Settings::get().loadMainWindowPosition());
+        resize(Settings::get().loadMainWindowSize());
         setWindowState(Settings::get().loadMainWindowMaximizedState() ?
                        Qt::WindowMaximized :
                        Qt::WindowNoState);

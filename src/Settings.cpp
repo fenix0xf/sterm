@@ -96,7 +96,7 @@ namespace detail
     {
         for (auto& w: QApplication::topLevelWidgets())
         {
-            QMainWindow* mainWindow = qobject_cast<QMainWindow*>(w);
+            auto mainWindow = qobject_cast<QMainWindow*>(w);
 
             if (mainWindow)
             {
